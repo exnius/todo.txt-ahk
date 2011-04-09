@@ -3,7 +3,52 @@
 [UI]
 ; Set this to 1 to close after adding an item.
 ; Set it to 0 (the default) to keep the GUI open.
-CloseAfterAdding=1
+CloseAfterAdding=0
+
+; Set the number of the column to be sorted automatically when the GUI is refreshed.
+; Set this as 4 to sort by line number, or 2 to sort by priority.
+SortColumn=4
+
+; Set text to display when the priority field is blank, default "-".
+NoneText=.
+
+; Order for project, name, and context of task to be written to file.
+; Names must be lowercase, between %'s, and seperated by spaces.
+; Example: Order=%context% %name% %project%
+Order=%project% %name% %context%
+
+; Set to 1 (the default) to add time stamp when an item is checked.
+; Set to 0 to only use a date stamp. (Does not affect previously stamped items.)
+TimeStamp=1
+
+; Set character to denote a subtask. (Default "_")
+; Note: If this changes, the script will not change the characters in the file(s).
+; If you change this character, the script will not be able to read the task file(s).
+SubtaskChar=-
+
+; Set to 1 (default) if subtasks should be displayed by default.
+; Otherwise set to 0.
+DisplaySubtasks=1
+
+; Set control font and size for gui.
+GuiFont=Tahoma
+FontSize=8
+
+; Set text and background colors for marking priorities and items due today.
+; Use 0xRRGGBB format. (0x000000 is black, 0xFFFFFF is white, etc.)
+; Leters must 
+ATextColor=0xFF0000
+ABackColor=0xFFFFFF
+
+BTextColor=0x0000FF
+BBackColor=0xFFFFFF
+
+CTextColor=0x00CC00
+CBackColor=0xFFFFFF
+
+DueTextColor=0xFFFFFF
+DueBackColor=0xFF0000
+
 
 [Files]
 
@@ -18,9 +63,21 @@ Folder=%appdata%
 ; If it's absolute (starts with somethig like C:\ or \\), the default
 ; folder is ignored.
 ; It can also contain references to environmental variables.
-Todo=mytodo.txt
+Todo=todo.txt
 
 ; The name of the done.txt file.
 ; This follows the same rules as todo (above).
-Done=mydone.txt
+Done=done.txt
 
+; Set the list of names for each file to be displayed in the file combo box.
+; Seperate names by '|'s. Do not use any whitespace characters.
+; Then for each name make a new line like this: NAME=FILEPATH
+; File paths follow the same rules as above.
+; Todo.txt is defined above.
+; Example:
+; 
+; FileList=todo|work|home
+; Work=C:\Documents\Tasks\work.txt
+; Home=Home.txt
+
+FileList=todo
