@@ -1,8 +1,9 @@
-﻿# Todo.txt-ahk
+﻿#Todo.txt-ahk
 An AutoHotKey GUI for working with todo.txt files.
-The original AHK script came from jdiamond ([http://github.com/jdiamond/todo.txt-ahk](http://github.com/jdiamond/todo.txt-ahk)) and has been forked here with  a number of modifications.
 
-For information about todo.txt files, see http://todotxt.com/.
+The original AHK script came from jdiamond ([https://github.com/jdiamond/todo.txt-ahk](https://github.com/jdiamond/todo.txt-ahk)) and has been forked here with  a number of modifications.
+
+For information about todo.txt files, see [http://todotxt.com/](http://todotxt.com/).
 
 This script tries to be compatible with todo.txt files produced by the todo.sh script found here: [https://github.com/ginatrapani/todo.txt-cli](https://github.com/ginatrapani/todo.txt-cli).
 
@@ -52,6 +53,6 @@ Sub-tasks can be shown or hidden by selecting the check box.
 A number of options can be configured by editing them from the Options dialog in the menu.
 
 ## Acknowledgements
-* Thanks to jdiamond for his original script that was used as a starting point for this project: https://github.com/jdiamond/todo.txt-ahk/
-* List color AHK functions (LVCustomColors.ahk) obtained from the Autohotkey forums: http://www.autohotkey.com/forum/topic54200.html
-* The checkmark icon came from here: http://www.iconspedia.com/icon/checkmark-12-20.html
+* Thanks to jdiamond for his original script that was used as a starting point for this project: [https://github.com/jdiamond/todo.txt-ahk](https://github.com/jdiamond/todo.txt-ahk)
+* List color AHK functions (LVCustomColors.ahk) obtained from the [Autohotkey forums](http://www.autohotkey.com/forum/topic54200.html)
+* The checkmark icon came from here: [http://www.iconspedia.com/icon/checkmark-12-20.html](http://www.iconspedia.com/icon/checkmark-12-20.html)
