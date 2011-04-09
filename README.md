@@ -1,5 +1,4 @@
-﻿
-# Todo.txt-ahk #
+﻿# Todo.txt-ahk #
 
 An AutoHotKey GUI for working with todo.txt files.
 
@@ -61,3 +60,5 @@ A number of options can be configured by editing them from the Options dialog in
 * Thanks to jdiamond for his original script that was used as a starting point for this project: [https://github.com/jdiamond/todo.txt-ahk](https://github.com/jdiamond/todo.txt-ahk)
 * List color AHK functions (LVCustomColors.ahk) obtained from the [Autohotkey forums](http://www.autohotkey.com/forum/topic54200.html)
 * The checkmark icon came from here: [http://www.iconspedia.com/icon/checkmark-12-20.html](http://www.iconspedia.com/icon/checkmark-12-20.html)
+
+This project started as an opportunity for my 13-year-old son, ~D~ to get a chance to learn some programming.  I've only consulted with him--he's done all of the programming on this endeavor. I want to give him the credit for this useful tool that I'm using on a daily basis.  Thanks, ~D~!!
