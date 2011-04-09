@@ -1,4 +1,5 @@
-﻿# Todo.txt-ahk #
+﻿
+# Todo.txt-ahk #
 
 An AutoHotKey GUI for working with todo.txt files.
 
