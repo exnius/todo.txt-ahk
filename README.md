@@ -1,10 +1,10 @@
 ﻿# Todo.txt-ahk
 An AutoHotKey GUI for working with todo.txt files.
-The original AHK script came from jdiamond (http://github.com/jdiamond/todo.txt-ahk ) and has been forked here with  a number of modifications.
+The original AHK script came from jdiamond ([http://github.com/jdiamond/todo.txt-ahk](http://github.com/jdiamond/todo.txt-ahk)) and has been forked here with  a number of modifications.
 
 For information about todo.txt files, see http://todotxt.com/.
 
-This script tries to be compatible with todo.txt files produced by the todo.sh script found here: https://github.com/ginatrapani/todo.txt-cli.
+This script tries to be compatible with todo.txt files produced by the todo.sh script found here: [https://github.com/ginatrapani/todo.txt-cli](https://github.com/ginatrapani/todo.txt-cli).
 
 ##Features:
 * Can change GUI font in ini file
@@ -19,7 +19,7 @@ This script tries to be compatible with todo.txt files produced by the todo.sh s
 * Support for multiple todo files (Configured in the todo.ini file)
 
 ## Installation
-To use this, you need to be running Windows with AutoHotKey installed. Just double-click todo.ahk to start the script. You should see a greencheck markk in your system tray which tells you that it's running.
+To use this, you need to be running Windows with AutoHotKey installed. Just double-click todo.ahk to start the script. You should see a greencheck mark in your system tray which tells you that it's running.
 
 By default, it expects the todo.txt file to be in the same folder as the script. You can change this by reading todo.ini.example and following its instructions.
 
