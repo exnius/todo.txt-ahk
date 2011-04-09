@@ -5,47 +5,51 @@
 ; Set it to 0 (the default) to keep the GUI open.
 CloseAfterAdding=0
 
-; Set the number of the column to be sorted automatically when the GUI is refreshed.
+; Set the number of the column that will be sorted automatically when the GUI is refreshed.
 ; Set this as 4 to sort by line number, or 2 to sort by priority.
 SortColumn=4
 
 ; Set text to display when the priority field is blank, default "-".
 NoneText=.
 
-; Order for project, name, and context of task to be written to file.
+; Set order for project, name, and context of task to be written to file.
 ; Names must be lowercase, between %'s, and seperated by spaces.
 ; Example: Order=%context% %name% %project%
 Order=%project% %name% %context%
 
-; Set to 1 (the default) to add time stamp when an item is checked.
-; Set to 0 to only use a date stamp. (Does not affect previously stamped items.)
+; Set to 1 (the default) to add time stamp and a date stamp when an item is done. (Format yyyy-MM-dd 24HH:mm)
+; Set to 0 to use only a date stamp. (Does not affect previously stamped items.)
 TimeStamp=1
 
 ; Set character to denote a subtask. (Default "_")
 ; Note: If this changes, the script will not change the characters in the file(s).
-; If you change this character, the script will not be able to read the task file(s).
+; If the set character does not match the one used in the task file, the script will not be able to read it.
 SubtaskChar=-
 
 ; Set to 1 (default) if subtasks should be displayed by default.
-; Otherwise set to 0.
+; Set to 0 if subtasks should be hidden when the script is opened.
 DisplaySubtasks=1
 
-; Set control font and size for gui.
+; Set font and font size for gui controls.
 GuiFont=Tahoma
 FontSize=8
 
-; Set text and background colors for marking priorities and items due today.
+; Set text and background colors for marking items with certain priorities and items that are due today.
 ; Use 0xRRGGBB format. (0x000000 is black, 0xFFFFFF is white, etc.)
-; Leters must 
+
+; Set text and background color for item with an (A) priority.
 ATextColor=0xFF0000
 ABackColor=0xFFFFFF
 
+; Set text and background color for item with an (B) priority.
 BTextColor=0x0000FF
 BBackColor=0xFFFFFF
 
+; Set text and background color for item with an (C) priority.
 CTextColor=0x00CC00
 CBackColor=0xFFFFFF
 
+; Set text and background color for item that is due today.
 DueTextColor=0xFFFFFF
 DueBackColor=0xFF0000
 
@@ -69,11 +73,11 @@ Todo=todo.txt
 ; This follows the same rules as todo (above).
 Done=done.txt
 
-; Set the list of names for each file to be displayed in the file combo box.
+; Set the list of names for each file to be displayed in the window menu.
 ; Seperate names by '|'s. Do not use any whitespace characters.
 ; Then for each name make a new line like this: NAME=FILEPATH
 ; File paths follow the same rules as above.
-; Todo.txt is defined above.
+; Todo.txt is defined above and does not need to be redefined.
 ; Example:
 ; 
 ; FileList=todo|work|home
