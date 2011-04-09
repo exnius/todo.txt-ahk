@@ -1,4 +1,4 @@
-﻿#Todo.txt-ahk
+﻿#Todo.txt-ahk:
 An AutoHotKey GUI for working with todo.txt files.
 
 The original AHK script came from jdiamond ([https://github.com/jdiamond/todo.txt-ahk](https://github.com/jdiamond/todo.txt-ahk)) and has been forked here with  a number of modifications.
