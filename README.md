@@ -3,59 +3,73 @@
 
 An AutoHotKey GUI for working with todo.txt files.
 
-The original AHK script came from jdiamond ([https://github.com/jdiamond/todo.txt-ahk](https://github.com/jdiamond/todo.txt-ahk)) and has been forked here with  a number of modifications.
+The original AHK script came from jdiamond ([https://github.com/jdiamond/todo.txt-ahk](https://github.com/jdiamond/todo.txt-ahk)) and has been forked here with a number of modifications.
 
 For information about todo.txt files, see [http://todotxt.com/](http://todotxt.com/).
 
 This script tries to be compatible with todo.txt files produced by the todo.sh script found here: [https://github.com/ginatrapani/todo.txt-cli](https://github.com/ginatrapani/todo.txt-cli).
 
 ##Features:
-* Can change GUI font in ini file
-* Can add time, date stamp to done items
-* Supports due dates in the form {due: YYYY-MM-DD}
-* Due dates can be added as part of the todo item 
-* Priorities can be added by right-clicking on todo item and selecting the priority
+* Supports priorities in the form (A-Z).
+* Supports due dates in the form {due: YYYY-MM-DD}.
+* Supports sub-tasks. (They can be shown or hidden) NOTE: Subtasks may not support projects or contexts.
+* Priorities can be added by right-clicking on todo item and selecting the priority.
+* Can change GUI font in ini file.
+* Can add time, date stamp to done items.
+* Due dates can be added as part of the todo item.
+* Script will highlight items that are due today. (Configured in the todo.ini file)
+* When an item is added, the script puts the priority, project, context, and name in a certain order (Configurable) regardless of how they are entered.
+* Items can be added anywhere in the todo.txt file by changing the line number control.
 * Color can be added to prioritized items (Configured in the todo.ini file)
 * Sort by line number or priority (default configured in the todo.ini file)
-* Double-click todo item to edit or update it
-* Support for sub-tasks (can be shown or hidden)
-* Support for multiple todo files (Configured in the todo.ini file)
+* Double-click todo item to edit or update it.
+* Supports multiple todo files. (Configured in the todo.ini file)
 
 ## Installation:
 To use this, you need to be running Windows with AutoHotKey installed. Just double-click todo.ahk to start the script. You should see a greencheck mark in your system tray which tells you that it's running.
 
 By default, it expects the todo.txt file to be in the same folder as the script. You can change this by reading todo.ini.example and following its instructions.
 
-The hotkey is Win+T. Hit the hotkey and the GUI will appear. Your focus will be in the text box that lets you add new items. Type in your item and hit ENTER to save it. The GUI
-will disappear.
+The hotkey is Win+T. Hit the hotkey and the GUI will appear. Your focus will be in the text box that lets you add new items. Type in your item and hit ENTER to save it. The GUI will disappear.
 
 ## Description:
-The GUI contains a Filter box. As you type text in the filter box, the list of items will show only containing that filter. You can use this to filter by project (+Proj1) or context (@context).
+The GUI contains a Filter box. As you type text in the filter box, the list of items will only show items containing that text. You can use this to filter by project (+project), context (@context), priority ((A-Z)), due date ({due: YYYY-MM-DD}), or done (x ).
 
-You can check and uncheck items in the list. This marks them as done or not in
-the todo.txt file.
+You can check and uncheck items in the list. This marks them as done or not done in the todo.txt file with a date stamp.
 
 You can click the Archive button to move the checked items to a done.txt file.
 
-You can add a due date by appending "today (or tod), tomorrow (or tom), mon, tues, wed, etc." to the end of the todo item. Example:
+Multiple todo files are supported. Configure the file(s) in todo.ini then select the file to view from the window menu.
+
+You can add a due date by appending "YYYY-MM-DD, MM-DD, today (or tod), tomorrow (or tom), mon (or monday), tue, wed, etc." to the end of the todo item. Example:
 Adding 
-    "Thing i need to do tom" 
+    "Thing I need to do tom" 
 will be entered in todo.txt as:
     Thing i need to do {due: YYYY-MM-DD} 
 (where date is tomorrow's date)
+Or adding
+	"Another thing I need to do 5-02"
+will be entered as:
+	"Another thing I need to do {due: YYYY-05-02}"
+
+The script will put the elements (priority, project, context, and name) in order. Example:
+Adding
+	"(A) +task @whatever Thing I need to do"
+will be entered as:
+	"(A) Thing I need to do +task @whatever"
+The order of the project, context, and name is configurable.
 
 You can double-click items to edit them or add a due date.
 
-You can also right-click items in the list. This allows you to update their
-descriptions, add a priority (A, B, or C) or delete them.
+You can also right-click items in the list. This allows you to update their descriptions, add a priority (A, B, or C) or delete them.
 
-You can specify text and background colors to display for prioritized items (see todo.ini file) and due items.
+You can specify text and background colors to display for prioritized items (see todo.ini file) and items that are due today.
 
 You can add sub-tasks by prepending a configurable prefix character "_" or "-" to the todo item.  It can be inserted to an existing item by specifying which line number to insert it after.
 
 Sub-tasks can be shown or hidden by selecting the check box.
 
-A number of options can be configured by editing them from the Options dialog in the menu.
+A number of options can be configured by editing them from the Options dialog in the file menu.
 
 ## Acknowledgements
 * Thanks to jdiamond for his original script that was used as a starting point for this project: [https://github.com/jdiamond/todo.txt-ahk](https://github.com/jdiamond/todo.txt-ahk)
