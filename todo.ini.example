@@ -1,6 +1,13 @@
 ; Rename this file to todo.ini and put it in the script folder.
 
 [UI]
+; Set hotkey to open gui. (Defaule #t)
+; This can be any valid hotkey in ahk.
+; However, only the ctrl(^), alt(!), shift(+), and windows(#) modifiers can be used by the options gui.
+; Example:
+; ScriptHotkey=#t
+ScriptHotkey=#t
+
 ; Set this to 1 to close after adding an item.
 ; Set it to 0 (the default) to keep the GUI open.
 CloseAfterAdding=0
@@ -60,7 +67,7 @@ DueBackColor=0xFF0000
 ; If this is not set, it defaults to the script folder.
 ; It can contain environmental variable references.
 ; It should not end with a \.
-Folder=%appdata%
+Folder=d:\documents\todo.ahk
 
 ; The name of the todo.txt file.
 ; If this is relative, it's relative to the default folder (above).
@@ -84,4 +91,5 @@ Done=done.txt
 ; Work=C:\Documents\Tasks\work.txt
 ; Home=Home.txt
 
-FileList=todo
+FileList=Todo|Home|Work|Example
+example=Example.txt

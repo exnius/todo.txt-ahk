@@ -23,6 +23,8 @@ TODO_FILE_NAME := "todo.txt"
 DONE_FILE_NAME := "done.txt"
 ICON_FILE_NAME := "todo.ico"
 
+SCRIPT_HOTKEY := GetConfig("UI","ScriptHotkey","#t")
+
 TODO_PATH := GetPath("todo", TODO_FILE_NAME)
 DONE_PATH := GetPath("done", DONE_FILE_NAME)
 ICON_PATH := A_ScriptDir . "\" . ICON_FILE_NAME
@@ -148,17 +150,31 @@ COL_1_WIDTH := 250
 COL_2_WIDTH := 150
 BUTTON_WIDTH := 50
 
+ADD_WIN := 0
+
+StringUpper, SCRIPT_HOTKEY, SCRIPT_HOTKEY
+
+IfInString, SCRIPT_HOTKEY, #
+{
+	ADD_WIN := 1
+	StringReplace, SCRIPT_HOTKEY, SCRIPT_HOTKEY, #, , All
+}
+
 ; Define options Gui.
 Gui, 2:Add, Text, R2 , Options:
 Gui, 2:Add, CheckBox, vCloseAfterAdding Checked%CLOSE_AFTER_ADDING% W%COL_1_WIDTH%, Close Gui after adding item.
 Gui, 2:Add, CheckBox, vDisplaySubtasks Checked%DISPLAY_SUBTASKS%, Display subtasks by default.
 Gui, 2:Add, CheckBox, vTimeStamp Checked%TIME_STAMP%, Add time to date stamp when item is done.
-Gui, 2:Add, Text,  Section, Set column to sort list view by.
+Gui, 2:Add, Text, Section, Set hotkey to run the script.
+Gui, 2:Add, Text, ,
+Gui, 2:Add, Text, , Set column to sort list view by.
 Gui, 2:Add, Text, , Set text to display for a blank priority field.
 Gui, 2:Add, Text, , Set character to denote subtasks.
 Gui, 2:Add, Text, , Set Gui font.
 Gui, 2:Add, Text, , Set Gui font size.
-Gui, 2:Add, Edit, ys W%COL_2_WIDTH%,
+Gui, 2:Add, Hotkey, vScriptHotkey ys W%COL_2_WIDTH%, %SCRIPT_HOTKEY%
+Gui, 2:Add, CheckBox, vAddWin W%COL_2_WIDTH% Checked%ADD_WIN%, Add windows key to hotkey.
+Gui, 2:Add, Edit, W%COL_2_WIDTH%,
 Gui, 2:Add, UpDown, vSortColumn Range2-5, %SORT_COLUMN%
 Gui, 2:Add, Edit, vNoneText W%COL_2_WIDTH%, %NONE_TEXT%
 Gui, 2:Add, Edit, vSubtaskChar Limit1 W%COL_2_WIDTH%, %SUBTASK_CHAR%
@@ -176,6 +192,15 @@ GuiControlGet Filter
 
 ReadFile(Filter, true)
 
+If (ADD_WIN = 1) {
+	SCRIPT_HOTKEY := "#" . SCRIPT_HOTKEY
+}
+
+StringLower, SCRIPT_HOTKEY, SCRIPT_HOTKEY
+
+; Win+T is the default hotkey.
+Hotkey, %SCRIPT_HOTKEY%, ShowGui, On
+
 Return
 
 ; Handle when cancel is clicked or when the ESCAPE key is pressed for the options Gui.
@@ -186,20 +211,27 @@ Return
 
 ; Handle when OK is pressed.
 OK:
-Gui, 2:Submit
+	Gui, 2:Submit
+	
+	If (AddWin = 1) {
+		ScriptHotkey := "#" . ScriptHotkey
+	}
 
-WriteConfig("UI", "CloseAfterAdding", CloseAfterAdding)
-WriteConfig("UI", "DisplaySubtasks", DisplaySubtasks)
-WriteConfig("UI", "TimeStamp", TimeStamp)
-WriteConfig("UI", "SortColumn", SortColumn)
-WriteConfig("UI", "NoneText", NoneText)
-WriteConfig("UI", "SubtaskChar", SubtaskChar)
-WriteConfig("UI", "GuiFont", GuiFont)
-WriteConfig("UI", "FontSize", FontSize)
+	StringLower, ScriptHotkey, ScriptHotkey
+	
+	WriteConfig("UI", "CloseAfterAdding", CloseAfterAdding)
+	WriteConfig("UI", "DisplaySubtasks", DisplaySubtasks)
+	WriteConfig("UI", "TimeStamp", TimeStamp)
+	WriteConfig("UI", "SortColumn", SortColumn)
+	WriteConfig("UI", "NoneText", NoneText)
+	WriteConfig("UI", "SubtaskChar", SubtaskChar)
+	WriteConfig("UI", "GuiFont", GuiFont)
+	WriteConfig("UI", "FontSize", FontSize)
+	WriteConfig("UI", "ScriptHotkey", ScriptHotkey)
 Reload
 
-; Win+T is the default hotkey.
-#t::
+ShowGui:
+
 	Gui Show,, %WINDOW_TITLE%
 	GuiControl Focus, NewItem
 	GuiControlGet Filter
@@ -535,7 +567,7 @@ AddItemAction(NewItem, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef
 	GuiControlGet LineNumber
 	
 	AddCount += 1
-	If (AddCount = LineNumber And NewItem <> "") {
+	If (AddCount = LineNumber + 1 And NewItem <> "") {
 		FileAppend %NewItem%`n, %tempPath%
 	}
 }
@@ -549,7 +581,6 @@ CheckItem(rowNumber, checked) {
 
 ; Action for CheckItem.
 CheckItemAction(checked, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef datePart) {
-	
 	If (checked) {
 		If (donePart = "") {
 			If (GetConfig("UI", "TimeStamp", "1")) {
@@ -713,7 +744,7 @@ CorrectOrder(ByRef NewItem, ByRef DueDate) {
 		project = +%project%
 	}
 
-	Order := GetConfig("UI", "Order", "%project% %name% %context%")
+	Order := GetConfig("UI", "Order", "%name% %project% %context%")
 	StringReplace, Order, Order, `%project`%, %project%, All
 	StringReplace, Order, Order, `%name`%, %name%, All
 	StringReplace, Order, Order, `%context`%, %context%, All
@@ -806,10 +837,14 @@ ParseDate(ByRef date) {
 		DayArraysun := 1
 		DayArraymon := 2
 		DayArraytue := 3
+		DayArraytues := 3
 		DayArraywed := 4
+		DayArraywednes := 4
 		DayArraythu := 5
+		DayArraythurs := 5
 		DayArrayfri := 6
 		DayArraysat := 7
+		DayArraysater := 7
 		DayArraysunday := 1
 		DayArraymonday := 2
 		DayArraytuesday := 3
