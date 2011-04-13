@@ -696,6 +696,7 @@ ArchiveItemsAction(data, ByRef donePart, ByRef textPart, ByRef priorityPart, ByR
 	Global DONE_PATH
 
 	If (donePart <> "") {
+		priorityPart := ""
 		line := MakeLine(donePart, textPart, priorityPart, datePart)
 		FileAppend %line%`n, %DONE_PATH%
 		DeleteItemAction(data, donePart, textPart, priorityPart, datePart)
