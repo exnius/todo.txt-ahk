@@ -426,11 +426,15 @@ ReadFile(filter, refreshFilter) {
 				Else If (priorityPart = "(C)") {
 					LV_SetColor(lineNumber, C_TEXT_COLOR, C_BACK_COLOR)	
 				}
-				; Highlight task  if it is due today.
 				
-				FormatTime, today, , '{due: 'yyyy-MM-dd'}'
-				If (datePart = today)
+				; Highlight task  if it is due today.
+				If (RegExMatch(datePart, "^\{due: (\d\d\d\d)-(\d\d)-(\d\d)}$", dateSection)
+				And (dateSection3 <= A_DD And dateSection2 <= A_MM And dateSection1 <= A_YYYY
+				Or dateSection2 < A_MM And dateSection1 <= A_YYYY
+				Or dateSection1 < A_YYYY))
+				{
 					LV_SetColor(lineNumber, DUE_TEXT_COLOR, DUE_BACK_COLOR)
+				}
 			}
 		}
 	}
