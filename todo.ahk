@@ -29,6 +29,10 @@ TODO_PATH := GetPath("todo", TODO_FILE_NAME)
 DONE_PATH := GetPath("done", DONE_FILE_NAME)
 ICON_PATH := A_ScriptDir . "\" . ICON_FILE_NAME
 
+DONE_TEXT_COLOR := GetConfig("UI","DoneTextColor","0xAAAAAA")
+DONE_BACK_COLOR := GetConfig("UI","DoneBackColor","0xFFFFFF")
+
+
 WINDOW_TITLE := "TODOs"
 
 ADD_LABEL := "&New:" ; & underlines the next letter, enabling the user to press ALT+N to focus on the following text field.
@@ -358,6 +362,9 @@ ReadFile(filter, refreshFilter) {
 	Global TEXT_COLUMN
 	Global SUBTASK_CHAR
 	Global LINE_COLUMN
+    Global DONE_TEXT_COLOR
+    Global DONE_BACK_COLOR
+    
 	GuiControlGet ShowSubtask
 	
 	A_TEXT_COLOR := GetConfig("UI","ATextColor","0x000000")
@@ -371,7 +378,7 @@ ReadFile(filter, refreshFilter) {
 	
 	DUE_TEXT_COLOR := GetConfig("UI","DueTextColor","0x000000")
 	DUE_BACK_COLOR := GetConfig("UI","DueBackColor","0xFFFFFF")
-	
+
 	; Disable notifications for checking and unchecking while the list is populated.
 	GuiControl, -AltSubmit, Items
 
@@ -435,6 +442,10 @@ ReadFile(filter, refreshFilter) {
 				{
 					LV_SetColor(lineNumber, DUE_TEXT_COLOR, DUE_BACK_COLOR)
 				}
+                if (donePart <> "")
+                {
+                    LV_SetColor(lineNumber, DONE_TEXT_COLOR, DONE_BACK_COLOR)
+                }
 			}
 		}
 	}
@@ -578,9 +589,21 @@ AddItemAction(NewItem, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef
 
 ; Check or uncheck an item in todo.txt.
 CheckItem(rowNumber, checked) {
+    Global LINE_COLUMN
+    Global DONE_TEXT_COLOR
+    Global DONE_BACK_COLOR
+    
 	GetPartsFromRow(rowNumber, text, priority, date)
 
 	UpdateFile("CheckItemAction", checked, text, priority, date)
+    ; Get line number so we can change the color on the correct row
+    LV_GetText(LineNumber, rowNumber, LINE_COLUMN) 
+    if (checked) {
+        LV_SetColor(LineNumber, DONE_TEXT_COLOR, DONE_BACK_COLOR)
+    }
+    else {
+        LV_SetColor(LineNumber, 0x000000, 0xFFFFFF)
+    }
 }
 
 ; Action for CheckItem.

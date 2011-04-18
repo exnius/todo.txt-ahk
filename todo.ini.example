@@ -60,6 +60,10 @@ CBackColor=0xFFFFFF
 DueTextColor=0xFFFFFF
 DueBackColor=0xFF0000
 
+; Set text and background color for item that is due today.
+DoneTextColor=0xAAAAAA
+DoneBackColor=0xFFFFFF
+
 
 [Files]
 
