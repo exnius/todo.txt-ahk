@@ -901,8 +901,6 @@ ParseDate(ByRef date) {
 		Else If (A_WDay > WeekDay) {
 			datePart3 := datePart3 + 7 - (A_WDay - WeekDay)
 		}
-		datePart2 += 0 ; Remove leading zero.
-		datePart2 := datePart2 < 10 ? "0" . datePart2 : datePart2
 		
 		month := MonthArray%datePart2%
 		
@@ -915,9 +913,11 @@ ParseDate(ByRef date) {
 			datePart2 -= 12
 		}
 		
+		datePart2 += 0 ; Remove leading zero.
 		datePart3 += 0 ; Remove leading zero.
-		
+		datePart2 := datePart2 < 10 ? "0" . datePart2 : datePart2
 		datePart3 := datePart3 < 10 ? "0" . datePart3 : datePart3
+		
 		date := datePart1 . "-" . datePart2 . "-" . datePart3
 		Return "due:" . date
 	}
