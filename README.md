@@ -44,14 +44,16 @@ Multiple todo files are supported. Configure the file(s) in todo.ini then select
 You can add a due date by appending "YYYY-MM-DD, MM-DD, today (or tod), tomorrow (or tom), mon (or monday), tue, wed, etc." to the end of the todo item. Example:
 
 Adding 
->    "Thing I need to do tom" 
+> "Thing I need to do tom" 
+
 will be entered in todo.txt as:
 
     `Thing i need to do due:YYYY-MM-DD`
 (where date is tomorrow's date)
 
 Or adding
->	"Another thing I need to do 5-02"
+> "Another thing I need to do 5-02"
+
 will be entered as:
 
 	`Another thing I need to do due:YYYY-05-02`
@@ -59,8 +61,10 @@ will be entered as:
 The script will put the elements (priority, project, context, and name) in order. Example:
 
 Adding
->	"(A) +task @whatever Thing I need to do"
+> "(A) +task @whatever Thing I need to do"
+
 will be entered as:
+
 	`(A) Thing I need to do +task @whatever`
 
 The order of the project, context, and name is configurable.
