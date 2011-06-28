@@ -11,7 +11,7 @@ This script tries to be compatible with todo.txt files produced by the todo.sh s
 
 ##Features:
 * Supports priorities in the form (A-Z).
-* Supports due dates in the form *due:YYYY-MM-DD*.
+* Supports due dates in the form **due:YYYY-MM-DD**.
 * Supports sub-tasks. (They can be shown or hidden) NOTE: Subtasks may not support projects or contexts.
 * Priorities can be added by right-clicking on todo item and selecting the priority.
 * Can change GUI font in ini file.
@@ -42,21 +42,27 @@ You can click the Archive button to move the checked items to a done.txt file.
 Multiple todo files are supported. Configure the file(s) in todo.ini then select the file to view from the window menu.
 
 You can add a due date by appending "YYYY-MM-DD, MM-DD, today (or tod), tomorrow (or tom), mon (or monday), tue, wed, etc." to the end of the todo item. Example:
+
 Adding 
-    "Thing I need to do tom" 
+>    "Thing I need to do tom" 
 will be entered in todo.txt as:
-    Thing i need to do due:YYYY-MM-DD
+
+    `Thing i need to do due:YYYY-MM-DD`
 (where date is tomorrow's date)
+
 Or adding
-	"Another thing I need to do 5-02"
+>	"Another thing I need to do 5-02"
 will be entered as:
-	"Another thing I need to do due:YYYY-05-02"
+
+	`Another thing I need to do due:YYYY-05-02`
 
 The script will put the elements (priority, project, context, and name) in order. Example:
+
 Adding
-	"(A) +task @whatever Thing I need to do"
+>	"(A) +task @whatever Thing I need to do"
 will be entered as:
-	"(A) Thing I need to do +task @whatever"
+	`(A) Thing I need to do +task @whatever`
+
 The order of the project, context, and name is configurable.
 
 You can double-click items to edit them or add a due date.
