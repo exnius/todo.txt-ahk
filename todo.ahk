@@ -440,7 +440,7 @@ ReadFile(filter, refreshFilter) {
 				}
 				
 				; Highlight task  if it is due today.
-				If (RegExMatch(datePart, "^\{due: (\d\d\d\d)-(\d\d)-(\d\d)}$", dateSection)
+				If (RegExMatch(datePart, "^due:(\d\d\d\d)-(\d\d)-(\d\d)$", dateSection)
 				And (dateSection3 <= A_DD And dateSection2 <= A_MM And dateSection1 <= A_YYYY
 				Or dateSection2 < A_MM And dateSection1 <= A_YYYY
 				Or dateSection1 < A_YYYY))
@@ -531,7 +531,7 @@ UpdateFile(action, data, text, priority, date) {
 
 ; Parse a line from todo.txt.
 ParseLine(line, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef datePart) {
-	RegExMatch(line, "^(x \d\d\d\d-\d\d-\d\d(?: \d?\d:\d\d)? )?(\([A-Z]\))?(.*?)(\s\{due: \d\d\d\d-[0-1]\d-[0-3]\d})?$", linePart)
+	RegExMatch(line, "^(x \d\d\d\d-\d\d-\d\d(?: \d?\d:\d\d)? )?(\([A-Z]\))?(.*?)(\sdue:\d\d\d\d-[0-1]\d-[0-3]\d)?$", linePart)
 	
 	donePart := TrimWhitespace(linePart1)
 	priorityPart := TrimWhitespace(linePart2)
@@ -762,13 +762,13 @@ CorrectOrder(ByRef NewItem, ByRef DueDate) {
 					name := name . " " . element
 				}
 			}
-			Else If (RegExMatch(element, "\{due:|\d\d\d\d-\d\d-\d\d\}")) {
+			Else If (RegExMatch(element, "due:\d\d\d\d-\d?-\d?")) {
 				DueDate := "" ? element : DueDate . " " . element
 			}
 			Else {
 				name := "" ? element : name . " " . element
 				If (RegExMatch(DueDate, "^\d\d\d\d-\d\d-\d\d$")) {
-					DueDate := "{due: " . DueDate . "}"
+					DueDate := "due:" . DueDate
 				}
 			}
 		}
@@ -813,11 +813,11 @@ ParseDate(ByRef date) {
 	
 	If (date = "")
 		Return False
-	Else If (RegExMatch(date, "^\{due: \d\d\d\d-\d\d-\d\d\}$")) {
+	Else If (RegExMatch(date, "^due:\d\d\d\d-\d\d-\d\d$")) {
 		Return date
 	}
 	Else If (RegExMatch(date, "^\d\d\d\d-\d\d-\d\d$")) {
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Else If (RegExMatch(date, "^(\d\d\d\d)-([0-1]?\d)-([0-3]?\d)$", datePart)) {
 		datePart2 += 0 ; Remove leading zero.
@@ -829,13 +829,13 @@ ParseDate(ByRef date) {
 			Return False
 		}
 		date := datePart1 . "-" . datePart2 . "-" . datePart3
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Else If (date = "tod" Or date = "today") {
 		date := A_YYYY . "-" . A_MM . "-" . A_DD
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
-	Else If (date = "tom" Or date = "tommarow") {
+	Else If (date = "tom" Or date = "tomorrow") {
 		datePart1 := A_YYYY
 		datePart2 := A_MM
 		datePart3 := A_DD + 1
@@ -852,7 +852,7 @@ ParseDate(ByRef date) {
 		datePart2 := datePart2 < 10 ? "0" . datePart2 : datePart2
 		datePart3 := datePart3 < 10 ? "0" . datePart3 : datePart3
 		date := datePart1 . "-" . datePart2 . "-" . datePart3
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Else If (RegExMatch(date, "^(\d?\d)-(\d?\d)$", datePart)) {
 		datePart1 += 0 ; Remove leading zero.
@@ -864,7 +864,7 @@ ParseDate(ByRef date) {
 			Return False
 	
 		date := A_YYYY . "-" . datePart1 . "-" . datePart2
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Else If (RegExMatch(date, "^(mon|tue|wed|thu|fri|sat|sun)|(mon|tues|wednes|thurs|fri|satur|sun)day$")) {
 		DayArraysun := 1
@@ -919,7 +919,7 @@ ParseDate(ByRef date) {
 		
 		datePart3 := datePart3 < 10 ? "0" . datePart3 : datePart3
 		date := datePart1 . "-" . datePart2 . "-" . datePart3
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Else If (RegExMatch(date, "^([0-3]?\d)-([0-1]?\d)-(\d\d\d\d)$", datePart)) {
 		If (datePart1 > 13 Or datePart2 > MonthArray%datePart1%)
@@ -931,13 +931,13 @@ ParseDate(ByRef date) {
 		datePart2 := datePart2 < 10 ? "0" . datePart2 : datePart2
 		
 		date := datePart3 . "-" . datePart1 . "-" . datePart2
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Else {
 		RegExMatch(date, "^(\d\d\d\d)-(\d\d)-(\d\d)$", dateParts)
 		If (datePart3 > MonthArray%datePart2% Or datePart2 > 12)
 			Return False
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Return date
 }
