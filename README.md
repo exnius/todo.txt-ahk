@@ -11,7 +11,7 @@ This script tries to be compatible with todo.txt files produced by the todo.sh s
 
 ##Features:
 * Supports priorities in the form (A-Z).
-* Supports due dates in the form {due: YYYY-MM-DD}.
+* Supports due dates in the form *due:YYYY-MM-DD*.
 * Supports sub-tasks. (They can be shown or hidden) NOTE: Subtasks may not support projects or contexts.
 * Priorities can be added by right-clicking on todo item and selecting the priority.
 * Can change GUI font in ini file.
@@ -33,7 +33,7 @@ By default, it expects the todo.txt file to be in the same folder as the script.
 The hotkey is Win+T. Hit the hotkey and the GUI will appear. Your focus will be in the text box that lets you add new items. Type in your item and hit ENTER to save it. The GUI will disappear.
 
 ## Description:
-The GUI contains a Filter box. As you type text in the filter box, the list of items will only show items containing that text. You can use this to filter by project (+project), context (@context), priority ((A-Z)), due date ({due: YYYY-MM-DD}), or done (x ).
+The GUI contains a Filter box. As you type text in the filter box, the list of items will only show items containing that text. You can use this to filter by project (+project), context (@context), priority ((A-Z)), due date (due:YYYY-MM-DD), or done (x ).
 
 You can check and uncheck items in the list. This marks them as done or not done in the todo.txt file with a date stamp.
 
@@ -45,12 +45,12 @@ You can add a due date by appending "YYYY-MM-DD, MM-DD, today (or tod), tomorrow
 Adding 
     "Thing I need to do tom" 
 will be entered in todo.txt as:
-    Thing i need to do {due: YYYY-MM-DD} 
+    Thing i need to do due:YYYY-MM-DD
 (where date is tomorrow's date)
 Or adding
 	"Another thing I need to do 5-02"
 will be entered as:
-	"Another thing I need to do {due: YYYY-05-02}"
+	"Another thing I need to do due:YYYY-05-02"
 
 The script will put the elements (priority, project, context, and name) in order. Example:
 Adding
@@ -76,4 +76,4 @@ A number of options can be configured by editing them from the Options dialog in
 * List color AHK functions (LVCustomColors.ahk) obtained from the [Autohotkey forums](http://www.autohotkey.com/forum/topic54200.html)
 * The checkmark icon came from here: [http://www.iconspedia.com/icon/checkmark-12-20.html](http://www.iconspedia.com/icon/checkmark-12-20.html)
 
-This project started as an opportunity for my 13-year-old son, ~D~ to get a chance to learn some programming.  I've only consulted with him--he's done all of the programming on this endeavor. I want to give him the credit for this useful tool that I'm using on a daily basis.  Thanks, ~D~!!
+This project started as an opportunity for my 14-year-old son, ~D~ to get a chance to learn some programming.  I've only consulted with him--he's done all of the programming on this endeavor. I want to give him the credit for this useful tool that I'm using on a daily basis.  Thanks, ~D~!!
