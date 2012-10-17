@@ -14,10 +14,10 @@ CloseAfterAdding=0
 
 ; Set the number of the column that will be sorted automatically when the GUI is refreshed.
 ; Set this as 4 to sort by line number, or 2 to sort by priority.
-SortColumn=4
+SortColumn=2
 
 ; Set text to display when the priority field is blank, default "-".
-NoneText=.
+NoneText= 
 
 ; Set order for project, name, and context of task to be written to file.
 ; Names must be lowercase, between %'s, and seperated by spaces.

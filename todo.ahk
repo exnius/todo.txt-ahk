@@ -43,15 +43,15 @@ FILE_LABEL := "&Task File:"
 LINE_NUM_LABEL := "&Line #:"
 
 SUBTASK_CHAR := GetConfig("UI", "SubtaskChar", "_")
-NONE_TEXT := GetConfig("UI", "NoneText", "-")
+;NONE_TEXT := GetConfig("UI", "NoneText", "-")
 
 FILE_LIST := GetConfig("Files","FileList","todo")
 
 CHECK_COLUMN := 1
-PRIORITY_COLUMN := 2
-TEXT_COLUMN := 3
-LINE_COLUMN := 4
-DUE_DATE_COLUMN := 5
+;PRIORITY_COLUMN := 9
+TEXT_COLUMN := 2
+LINE_COLUMN := 3
+DUE_DATE_COLUMN := 4
 SORT_COLUMN := GetConfig("UI","SortColumn","4")
 
 CHECK_HEADER := ""
@@ -82,8 +82,6 @@ DISPLAY_SUBTASKS := GetConfig("UI","DisplaySubtasks","1")
 ; Set icon.
 Menu TRAY, Icon, %ICON_PATH%
 
-; Set font.
-;Gui, font, s%FONT_SIZE%, %CONTROL_FONT%
 
 ; Define the GUI.
 Gui +Resize
@@ -97,12 +95,11 @@ Gui Add, Edit,  ys W%LINE_NUM_WIDTH% Number
 Gui Add, UpDown, vLineNumber Range0-9999
 Gui Add, Text, w%TEXT_WIDTH% x10 Section, %FILTER_LABEL%
 Gui Add, Edit, vFilter gFilter ys W%CONTROL_WIDTH%
-;Gui Add, Text, w%TEXT_WIDTH% x10 Section, %ITEMS_LABEL%
-Gui Add, Text, w1 x1 Section, 
+Gui Add, Text, w1 x1 Section,
 
 ; Set font.
 Gui, font, s%FONT_SIZE%, %CONTROL_FONT%
-Gui Add, ListView, vItems gItems ys Checked -ReadOnly H%LIST_HEIGHT% W%LIST_WIDTH%, %CHECK_HEADER%|%PRIORITY_HEADER%|%TEXT_HEADER%|%LINE_NUMBER_HEADER%|%DUE_DATE_HEADER%
+Gui Add, ListView, vItems gItems ys Checked -ReadOnly H%LIST_HEIGHT% W%LIST_WIDTH%, %CHECK_HEADER%|%TEXT_HEADER%|%LINE_NUMBER_HEADER%|%DUE_DATE_HEADER%
 Gui, font, s8, Tahoma
 
 Gui Add, Button, vAdd gAdd Default Section, %ADD_BUTTON_TEXT%
@@ -122,7 +119,7 @@ Menu ItemMenu, Add, Delete, MenuHandler
 Menu, Priority, Add, (A), MenuHandler
 Menu, Priority, Add, (B), MenuHandler
 Menu, Priority, Add, (C), MenuHandler
-Menu, Priority, Add, %NONE_TEXT%, MenuHandler
+Menu, Priority, Add, None, MenuHandler
 
 ; Define the priority submenu in the context menu.
 Menu, ItemMenu, Add, Priority, :Priority
@@ -180,15 +177,15 @@ Gui, 2:Add, CheckBox, vTimeStamp Checked%TIME_STAMP%, Add time to date stamp whe
 Gui, 2:Add, Text, Section, Set hotkey to run the script.
 Gui, 2:Add, Text, ,
 Gui, 2:Add, Text, , Set column to sort list view by.
-Gui, 2:Add, Text, , Set text to display for a blank priority field.
+;Gui, 2:Add, Text, , Set text to display for a blank priority field.
 Gui, 2:Add, Text, , Set character to denote subtasks.
 Gui, 2:Add, Text, , Set Gui font.
 Gui, 2:Add, Text, , Set Gui font size.
 Gui, 2:Add, Hotkey, vScriptHotkey ys W%COL_2_WIDTH%, %SCRIPT_HOTKEY%
-Gui, 2:Add, CheckBox, vAddWin W%COL_2_WIDTH% Checked%ADD_WIN%, Add windows key to hotkey.
+Gui, 2:Add, CheckBox, vAddWin W%COL_2_WIDTH% Checked%ADD_WIN%, Add Win key to hotkey.
 Gui, 2:Add, Edit, W%COL_2_WIDTH%,
 Gui, 2:Add, UpDown, vSortColumn Range2-5, %SORT_COLUMN%
-Gui, 2:Add, Edit, vNoneText W%COL_2_WIDTH%, %NONE_TEXT%
+;Gui, 2:Add, Edit, vNoneText W%COL_2_WIDTH%, %NONE_TEXT%
 Gui, 2:Add, Edit, vSubtaskChar Limit1 W%COL_2_WIDTH%, %SUBTASK_CHAR%
 Gui, 2:Add, Edit, vGuiFont W%COL_2_WIDTH%, %GUI_FONT%
 Gui, 2:Add, Edit, W%COL_2_WIDTH%,
@@ -224,13 +221,13 @@ Return
 ; Handle when OK is pressed.
 OK:
 	Gui, 2:Submit
-	
+
 	If (AddWin = 1) {
 		ScriptHotkey := "#" . ScriptHotkey
 	}
 
 	StringLower, ScriptHotkey, ScriptHotkey
-	
+
 	WriteConfig("UI", "CloseAfterAdding", CloseAfterAdding)
 	WriteConfig("UI", "DisplaySubtasks", DisplaySubtasks)
 	WriteConfig("UI", "TimeStamp", TimeStamp)
@@ -247,7 +244,7 @@ ShowGui:
 	Gui Show,, %WINDOW_TITLE%
 	GuiControl Focus, NewItem
 	GuiControlGet Filter
-	
+
 	ReadFile(Filter, true)
 
 Return
@@ -259,12 +256,12 @@ Add:
 	If (DueDate <> "") {
 		FormatTime, DueDate, %DueDate%, yyyy-MM-dd
 	}
-	
+
 	AddItem(NewItem, DueDate, LineNumber)
-	
+
 	; Clear the NewItem edit box.
 	GuiControl ,, NewItem,
-	
+
 	; Find if close after adding option is true.
 	If (GetConfig("UI", "CloseAfterAdding", "1"))
 		Gui Cancel
@@ -372,18 +369,18 @@ ReadFile(filter, refreshFilter) {
 	Global LINE_COLUMN
     Global DONE_TEXT_COLOR
     Global DONE_BACK_COLOR
-    
+
 	GuiControlGet ShowSubtask
-	
+
 	A_TEXT_COLOR := GetConfig("UI","ATextColor","0x000000")
 	A_BACK_COLOR := GetConfig("UI","ABackColor","0xFFFFFF")
-	
+
 	B_TEXT_COLOR := GetConfig("UI","BTextColor","0x000000")
 	B_BACK_COLOR := GetConfig("UI","BBackColor","0xFFFFFF")
-	
+
 	C_TEXT_COLOR := GetConfig("UI","CTextColor","0x000000")
 	C_BACK_COLOR := GetConfig("UI","CBackColor","0xFFFFFF")
-	
+
 	DUE_TEXT_COLOR := GetConfig("UI","DueTextColor","0x000000")
 	DUE_BACK_COLOR := GetConfig("UI","DueBackColor","0xFFFFFF")
 
@@ -395,14 +392,14 @@ ReadFile(filter, refreshFilter) {
 	; Active color change and disable redraw.
 	LV_Change(1, 1, 1, LINE_COLUMN)
 	GuiControl, -Redraw, Items
-	
+
 	If (refreshFilter) {
 		filter := ""
 	}
-	
+
 	; Clear the list view.
 	LV_Delete()
-	
+
 	; Escape subtask char if needed for use in RegExMatch.
 	If (RegExMatch(SUBTASK_CHAR, "^[\\[.*?+{|()^$]$")) {
 		char := "\" . SUBTASK_CHAR
@@ -410,7 +407,7 @@ ReadFile(filter, refreshFilter) {
 	Else {
 		char := SUBTASK_CHAR
 	}
-	
+
 	; Read file one line at a time.
 	Loop Read, %TODO_PATH%
 	{
@@ -418,32 +415,35 @@ ReadFile(filter, refreshFilter) {
 
 		If (line <> "") {
 			lineNumber := lineNumber + 1
-			ParseLine(line, donePart, textPart, priorityPart, datePart)
-	
+			ParseLine(line, donePart, textPart, datePart)
+            RegExMatch(textPart, "^(\([A-Z]\))?(.*)",prioTemp)
+            priorityPart := prioTemp1
+
 			If (ShowSubtask Or Not RegExMatch(textPart, "^\s*" . char . ".*")) {
-			
+
 				If (filter <> "") {
 					IfInString, line, %filter%
 					{
-						AddItemToList(donePart, textPart, priorityPart, datePart, lineNumber)
+						AddItemToList(donePart, textPart, datePart, lineNumber)
 					}
 				} Else {
-					AddItemToList(donePart, textPart, priorityPart, datePart, lineNumber)
+					AddItemToList(donePart, textPart, datePart, lineNumber)
 				}
+                ;MsgBox, %priorityPart%
 				; Change color of row according to priority.
 				LV_SetColor(lineNumber, 0x000000, 0xFFFFFF)
 				If (priorityPart = "(A)") {
-					LV_SetColor(lineNumber, A_TEXT_COLOR, A_BACK_COLOR)	
+					LV_SetColor(lineNumber, A_TEXT_COLOR, A_BACK_COLOR)
 				}
 				Else If (priorityPart = "(B)") {
-					LV_SetColor(lineNumber, B_TEXT_COLOR, B_BACK_COLOR)	
+					LV_SetColor(lineNumber, B_TEXT_COLOR, B_BACK_COLOR)
 				}
 				Else If (priorityPart = "(C)") {
-					LV_SetColor(lineNumber, C_TEXT_COLOR, C_BACK_COLOR)	
+					LV_SetColor(lineNumber, C_TEXT_COLOR, C_BACK_COLOR)
 				}
-				
+
 				; Highlight task  if it is due today.
-				If (RegExMatch(datePart, "^\{due: (\d\d\d\d)-(\d\d)-(\d\d)}$", dateSection)
+				If (RegExMatch(datePart, "^due:(\d\d\d\d)-(\d\d)-(\d\d)$", dateSection)
 				And (dateSection3 <= A_DD And dateSection2 <= A_MM And dateSection1 <= A_YYYY
 				Or dateSection2 < A_MM And dateSection1 <= A_YYYY
 				Or dateSection1 < A_YYYY))
@@ -459,44 +459,40 @@ ReadFile(filter, refreshFilter) {
 	}
 	; Re-select the values that were previously selected.
 	GuiControl ChooseString, Filter, %filter%
-	
+
 	; Re-enable notifications for handling checking and unchecking.
 	GuiControl, +AltSubmit, Items
-	
+
 	; Re-enable redraw.
 	GuiControl, +Redraw, Items
-	
+
 	; Sort list
 	LV_ModifyCol(SORT_COLUMN, "Sort")
-	
+
 	; Resize columns in list view to fit their contents.
 	LV_ModifyCol()
 }
 
 ; Add an item to the list view.
-AddItemToList(donePart, textPart, ByRef priorityPart, ByRef datePart, lineNumber) {
-	Global NONE_TEXT
-	If (priorityPart = "") {
-		priorityPart := NONE_TEXT
-	}
+AddItemToList(donePart, textPart, ByRef datePart, lineNumber) {
 	If (donePart <> "") {
-		LV_Insert(1, "Check", "", priorityPart, textPart, lineNumber, datePart)
+		LV_Insert(1, "Check", "", textPart, lineNumber, datePart)
 	}
 	Else {
-		LV_Insert(1, "", "", priorityPart, textPart, lineNumber, datePart)
+		LV_Insert(1, "", "", textPart, lineNumber, datePart)
 	}
 }
 
 ; Generic function for updating items in todo.txt.
 ; `action` is name of function to invoke for matching items.
 ; Function must have this signature:
-; 	MyAction(data, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef datePart)
+; 	MyAction(data, ByRef donePart, ByRef textPart,ByRef datePart)
 ; Function can return true to increment returned count.
 ; `data` is any value that `action` might need.
 ; Only lines that match `text` and `priority` invoke `action`.
 ; `text` can be "*" to invoke the action on all items.
 ; Returns the count of times `action` returned true.
-UpdateFile(action, data, text, priority, date) {
+UpdateFile(action, data, text, date) {
 	Global TODO_PATH
 	Global TODO_FILE_NAME
 	Global tempPath
@@ -511,15 +507,15 @@ UpdateFile(action, data, text, priority, date) {
 		line := TrimWhitespace(A_LoopReadLine)
 
 		If (line <> "") {
-			ParseLine(line, donePart, textPart, priorityPart, datePart)
+			ParseLine(line, donePart, textPart, datePart)
 
-			If ((text = "*") Or (textPart = text And priorityPart = priority)) {
-				If (%action%(data, donePart, textPart, priorityPart, datePart))
+			If ((text = "*") Or (textPart = text)) {
+				If (%action%(data, donePart, textPart, datePart))
 					count := count + 1
 			}
-			
-			line := MakeLine(donePart, textPart, priorityPart, datePart)
-			
+
+			line := MakeLine(donePart, textPart, datePart)
+
 			If (line <> "") {
 				FileAppend %line%`n, %tempPath%
 			}
@@ -533,24 +529,23 @@ UpdateFile(action, data, text, priority, date) {
 }
 
 ; Parse a line from todo.txt.
-ParseLine(line, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef datePart) {
-	RegExMatch(line, "^(x \d\d\d\d-\d\d-\d\d(?: \d?\d:\d\d)? )?(\([A-Z]\))?(.*?)(\s\{due: \d\d\d\d-[0-1]\d-[0-3]\d})?$", linePart)
-	
+ParseLine(line, ByRef donePart, ByRef textPart, ByRef datePart) {
+	RegExMatch(line, "^(x \d\d\d\d-\d\d-\d\d(?: \d?\d:\d\d)? )?(\([A-Z]\))?(.*?)(\sdue:\d\d\d\d-[0-1]\d-[0-3]\d)?$", linePart)
+
 	donePart := TrimWhitespace(linePart1)
 	priorityPart := TrimWhitespace(linePart2)
-	textPart := TrimWhitespace(linePart3)
+    if (priorityPart <> "")
+        textPart := priorityPart . " " . TrimWhitespace(linePart3)
+    else
+        textPart := TrimWhitespace(linePart3)
 	datePart := TrimWhitespace(linePart4)
 }
 
 ; Put a parsed line back together for writing to todo.txt.
-MakeLine(ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef datePart) {
-	Global NONE_TEXT
+MakeLine(ByRef donePart, ByRef textPart, ByRef datePart) {
 	Global SUBTASK_CHAR
-	
+
 	line := textPart
-	If (priorityPart <> "" And priorityPart <> NONE_TEXT) {
-		line := priorityPart . " " . line
-	}
 	If (donePart <> "") {
 		line := donePart . " " . line
 	}
@@ -566,7 +561,7 @@ AddItem(NewItem, DueDate, LineNumber) {
 	Global AddCount
 
 	AddCount := 0
-	
+
 	NewItem := TrimWhitespace(NewItem)
 
 	NewItem := CorrectOrder(NewItem, DueDate)
@@ -574,9 +569,9 @@ AddItem(NewItem, DueDate, LineNumber) {
 	If (NewItem <> "" And LineNumber = 0) {
 		FileAppend %NewItem%`n, %TODO_PATH%
 	} Else If (LineNumber <> 0) {
-		UpdateFile("AddItemAction", NewItem, "*", "", "")
+		UpdateFile("AddItemAction", NewItem, "*", "")
 	}
-	
+
 	GuiControl, Text, LineNumber, 0
 	GuiControl, , DueDate,
 
@@ -584,11 +579,11 @@ AddItem(NewItem, DueDate, LineNumber) {
 }
 
 ; Action for add item.
-AddItemAction(NewItem, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef datePart) {
+AddItemAction(NewItem, ByRef donePart, ByRef textPart, ByRef datePart) {
 	Global tempPath
 	Global AddCount
 	GuiControlGet LineNumber
-	
+
 	AddCount += 1
 	If (AddCount = LineNumber + 1 And NewItem <> "") {
 		FileAppend %NewItem%`n, %tempPath%
@@ -600,12 +595,12 @@ CheckItem(rowNumber, checked) {
     Global LINE_COLUMN
     Global DONE_TEXT_COLOR
     Global DONE_BACK_COLOR
-    
-	GetPartsFromRow(rowNumber, text, priority, date)
 
-	UpdateFile("CheckItemAction", checked, text, priority, date)
+	GetPartsFromRow(rowNumber, text, date)
+
+	UpdateFile("CheckItemAction", checked, text, date)
     ; Get line number so we can change the color on the correct row
-    LV_GetText(LineNumber, rowNumber, LINE_COLUMN) 
+    LV_GetText(LineNumber, rowNumber, LINE_COLUMN)
     if (checked) {
         LV_SetColor(LineNumber, DONE_TEXT_COLOR, DONE_BACK_COLOR)
     }
@@ -615,8 +610,10 @@ CheckItem(rowNumber, checked) {
 }
 
 ; Action for CheckItem.
-CheckItemAction(checked, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef datePart) {
+CheckItemAction(checked, ByRef donePart, ByRef textPart, ByRef datePart) {
 	If (checked) {
+        RegExMatch(textPart, "(\([A-Z]\) )?(.*)",prioTemp)
+        textPart := prioTemp2
 		If (donePart = "") {
 			If (GetConfig("UI", "TimeStamp", "1")) {
 				FormatTime, donePart, , 'x 'yyyy-MM-dd HH:mm
@@ -625,7 +622,7 @@ CheckItemAction(checked, ByRef donePart, ByRef textPart, ByRef priorityPart, ByR
 				FormatTime, donePart, , 'x 'yyyy-MM-dd
 			}
 		}
-	} 
+	}
 	Else {
 		donePart := ""
 	}
@@ -634,53 +631,57 @@ CheckItemAction(checked, ByRef donePart, ByRef textPart, ByRef priorityPart, ByR
 ; Change the text of an item.
 UpdateItem(rowNumber) {
 	Global UPDATE_PROMPT
-	
-	GetPartsFromRow(rowNumber, text, priority, date)
+
+	GetPartsFromRow(rowNumber, text, date)
 
 	StringReplace prompt, UPDATE_PROMPT, `%text`%, %text%
-	task := priority
+;	task := priority
 	task := task = "" ? text : task . " " . text
 	task := task = "" ? date : task . " " . date
 	task := TrimWhitespace(task)
-	
+
 	InputBox newText, Update Item, %prompt%,,,,,,,, %task%
-	
+
 	If ErrorLevel
 		Return
 
 	newText := TrimWhitespace(newText)
-	
+
 	datePart := ""
 	newText := CorrectOrder(newText, datePart)
-	
-	UpdateFile("UpdateItemAction", newText, text, priority, date)
+
+	UpdateFile("UpdateItemAction", newText, text, date)
 	FilterItems()
 }
 
 ; Action for UpdateItem.
-UpdateItemAction(newText, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef datePart) {
+UpdateItemAction(newText, ByRef donePart, ByRef textPart, ByRef datePart) {
 	blankVar := ""
-	ParseLine(newText, blankVar, textPart, priorityPart, datePart) ; Pass in blankVar because we want to retain the value of donePart.
+	ParseLine(newText, blankVar, textPart, datePart) ; Pass in blankVar because we want to retain the value of donePart.
 }
 
 ; Changes the priority of an item when it is selected from the menu.
 UpdatePriority(newPriority, rowNumber) {
-	GetPartsFromRow(rowNumber, text, priority, date)
-	
-	UpdateFile("UpdatePriorityAction", newPriority, text, priority, datePart)
+	GetPartsFromRow(rowNumber, text, date)
+
+	UpdateFile("UpdatePriorityAction", newPriority, text, datePart)
 	FilterItems()
 }
 
 ; Action for UpdatePriority
-UpdatePriorityAction(newPriority, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef datePart) {
-	priorityPart := newPriority
+UpdatePriorityAction(newPriority, ByRef donePart, ByRef textPart, ByRef datePart) {
+    RegExMatch(textPart, "^(\([A-Z]\) )?(.*)",prioTemp)
+    if (newPriority == "None")
+        textPart := prioTemp2
+    else
+        textPart := newPriority . " " . prioTemp2
 }
 
 ; Delete an item.
 DeleteItem(rowNumber) {
 	Global DELETE_PROMPT
 
-	GetPartsFromRow(rowNumber, text, priority, date)
+	GetPartsFromRow(rowNumber, text, date)
 
 	StringReplace prompt, DELETE_PROMPT, `%text`%, %text%
 	MsgBox 4,, %prompt%
@@ -688,50 +689,44 @@ DeleteItem(rowNumber) {
 	IfMsgBox No
 		Return
 
-	UpdateFile("DeleteItemAction", 0, text, priority, date)
+	UpdateFile("DeleteItemAction", 0, text, date)
 	FilterItems()
 }
 
 ; Action for DeleteItem.
-DeleteItemAction(data, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef datePart) {
+DeleteItemAction(data, ByRef donePart, ByRef textPart, ByRef datePart) {
 	donePart := ""
 	textPart := ""
-	priorityPart := ""
 	datePart := ""
 }
 
 ; Gets the text, priority, and date for the specified row.
-GetPartsFromRow(rowNumber, ByRef text, ByRef priority, ByRef date) {
+GetPartsFromRow(rowNumber, ByRef text, ByRef date) {
 	Global TEXT_COLUMN
-	Global PRIORITY_COLUMN
 	Global DUE_DATE_COLUMN
 	Global NONE_TEXT
 
 	LV_GetText(text, rowNumber, TEXT_COLUMN)
-	LV_GetText(priority, rowNumber, PRIORITY_COLUMN)
 	LV_GetText(date, rowNumber, DUE_DATE_COLUMN)
-	
-	If (priority = NONE_TEXT) {
-		priority := ""
-	}
 }
 
 ; Archive an item.
 ArchiveItems() {
-	count := UpdateFile("ArchiveItemsAction", 0, "*", "", "")
+	count := UpdateFile("ArchiveItemsAction", 0, "*", "")
 	FilterItems()
 	MsgBox Archived %count% items!
 }
 
-ArchiveItemsAction(data, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef datePart) {
+ArchiveItemsAction(data, ByRef donePart, ByRef textPart, ByRef datePart) {
 	Global DONE_PATH
 
 	If (donePart <> "") {
-		priorityPart := ""
-		line := MakeLine(donePart, textPart, priorityPart, datePart)
+        RegExMatch(textPart, "(\([A-Z]\) )?(.*)",prioTemp)
+        textPart := prioTemp2
+		line := MakeLine(donePart, textPart, datePart)
 		FileAppend %line%`n, %DONE_PATH%
-		DeleteItemAction(data, donePart, textPart, priorityPart, datePart)
-		
+		DeleteItemAction(data, donePart, textPart, datePart)
+
 		Return true
 	}
 }
@@ -739,7 +734,7 @@ ArchiveItemsAction(data, ByRef donePart, ByRef textPart, ByRef priorityPart, ByR
 ; Correct order of context, project, priority, and due date for writing to todo.txt if needed.
 CorrectOrder(ByRef NewItem, ByRef DueDate) {
 	StringSplit, taskArray, NewItem, %A_Space%,
-	
+
 	Loop, %taskArray0%
 	{
 		element := taskArray%A_Index%
@@ -765,13 +760,13 @@ CorrectOrder(ByRef NewItem, ByRef DueDate) {
 					name := name . " " . element
 				}
 			}
-			Else If (RegExMatch(element, "\{due:|\d\d\d\d-\d\d-\d\d\}")) {
+			Else If (RegExMatch(element, "due:\d\d\d\d-\d?-\d?")) {
 				DueDate := "" ? element : DueDate . " " . element
 			}
 			Else {
 				name := "" ? element : name . " " . element
 				If (RegExMatch(DueDate, "^\d\d\d\d-\d\d-\d\d$")) {
-					DueDate := "{due: " . DueDate . "}"
+					DueDate := "due:" . DueDate
 				}
 			}
 		}
@@ -786,12 +781,12 @@ CorrectOrder(ByRef NewItem, ByRef DueDate) {
 	StringReplace, Order, Order, `%context`%, %context%, All
 	StringReplace, Order, Order, %A_Space%%A_Space%, %A_Space%, All
 	StringReplace, Order, Order, %A_Space%%A_Space%, %A_Space%, All
-	
+
 	Order := TrimWhitespace(Order)
-	
+
 	Order := Order <> "" ? " " . Order : Order
 	DueDate := DueDate <> "" ? " " . TrimWhitespace(DueDate) : DueDate
-	
+
 	NewItem := priority . Order . DueDate
 	NewItem := TrimWhitespace(NewItem)
 	Return NewItem
@@ -800,7 +795,7 @@ CorrectOrder(ByRef NewItem, ByRef DueDate) {
 ; Properly format date string to write to todo.txt.
 ParseDate(ByRef date) {
 	date := TrimWhitespace(date)
-	
+
 	MonthArray01 := 31
 	MonthArray02 := 28
 	MonthArray03 := 31
@@ -813,36 +808,36 @@ ParseDate(ByRef date) {
 	MonthArray10 := 31
 	MonthArray11 := 30
 	MonthArray12 := 31
-	
+
 	If (date = "")
 		Return False
-	Else If (RegExMatch(date, "^\{due: \d\d\d\d-\d\d-\d\d\}$")) {
+	Else If (RegExMatch(date, "^due:\d\d\d\d-\d\d-\d\d$")) {
 		Return date
 	}
 	Else If (RegExMatch(date, "^\d\d\d\d-\d\d-\d\d$")) {
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Else If (RegExMatch(date, "^(\d\d\d\d)-([0-1]?\d)-([0-3]?\d)$", datePart)) {
 		datePart2 += 0 ; Remove leading zero.
 		datePart3 += 0
 		datePart2 := datePart2 < 10 ? "0" . datePart2 : datePart2 ;Add leading zero.
 		datePart3 := datePart3 < 10 ? "0" . datePart3 : datePart3
-		
+
 		If (datePart2 > 13 Or datePart3 > MonthArray%datePart2%) {
 			Return False
 		}
 		date := datePart1 . "-" . datePart2 . "-" . datePart3
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Else If (date = "tod" Or date = "today") {
 		date := A_YYYY . "-" . A_MM . "-" . A_DD
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
-	Else If (date = "tom" Or date = "tommarow") {
+	Else If (date = "tom" Or date = "tomorrow") {
 		datePart1 := A_YYYY
 		datePart2 := A_MM
 		datePart3 := A_DD + 1
-		
+
 		If (datePart3 > MonthArray%datePart2%) {
 			datePart3 -= (MonthArray%datePart2%)
 			datePart2 += 1
@@ -855,7 +850,7 @@ ParseDate(ByRef date) {
 		datePart2 := datePart2 < 10 ? "0" . datePart2 : datePart2
 		datePart3 := datePart3 < 10 ? "0" . datePart3 : datePart3
 		date := datePart1 . "-" . datePart2 . "-" . datePart3
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Else If (RegExMatch(date, "^(\d?\d)-(\d?\d)$", datePart)) {
 		datePart1 += 0 ; Remove leading zero.
@@ -865,9 +860,9 @@ ParseDate(ByRef date) {
 
 		If (datePart1 > 13 Or datePart2 > MonthArray%datePart1%)
 			Return False
-	
+
 		date := A_YYYY . "-" . datePart1 . "-" . datePart2
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Else If (RegExMatch(date, "^(mon|tue|wed|thu|fri|sat|sun)|(mon|tues|wednes|thurs|fri|satur|sun)day$")) {
 		DayArraysun := 1
@@ -888,11 +883,11 @@ ParseDate(ByRef date) {
 		DayArraythursday := 5
 		DayArrayfriday := 6
 		DayArraysaturday := 7
-		
+
 		datePart1 := A_YYYY
 		datePart2 := A_MM
 		datePart3 := A_DD
-		
+
 		WeekDay := DayArray%date%
 
 		If (A_WDay < WeekDay) {
@@ -904,11 +899,9 @@ ParseDate(ByRef date) {
 		Else If (A_WDay > WeekDay) {
 			datePart3 := datePart3 + 7 - (A_WDay - WeekDay)
 		}
-		datePart2 += 0 ; Remove leading zero.
-		datePart2 := datePart2 < 10 ? "0" . datePart2 : datePart2
-		
+
 		month := MonthArray%datePart2%
-		
+
 		If (datePart3 > month) {
 			datePart3 := datePart3 - month
 			datePart2 += 1
@@ -917,30 +910,32 @@ ParseDate(ByRef date) {
 			datePart1 += 1
 			datePart2 -= 12
 		}
-		
+
+		datePart2 += 0 ; Remove leading zero.
 		datePart3 += 0 ; Remove leading zero.
-		
+		datePart2 := datePart2 < 10 ? "0" . datePart2 : datePart2
 		datePart3 := datePart3 < 10 ? "0" . datePart3 : datePart3
+
 		date := datePart1 . "-" . datePart2 . "-" . datePart3
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Else If (RegExMatch(date, "^([0-3]?\d)-([0-1]?\d)-(\d\d\d\d)$", datePart)) {
 		If (datePart1 > 13 Or datePart2 > MonthArray%datePart1%)
 			Return False
-	
+
 		datePart1 += 0 ; Remove leading zero.
-		datePart2 += 0 ; Remove leading zero.	
+		datePart2 += 0 ; Remove leading zero.
 		datePart1 := datePart1 < 10 ? "0" . datePart1 : datePart1
 		datePart2 := datePart2 < 10 ? "0" . datePart2 : datePart2
-		
+
 		date := datePart3 . "-" . datePart1 . "-" . datePart2
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Else {
 		RegExMatch(date, "^(\d\d\d\d)-(\d\d)-(\d\d)$", dateParts)
 		If (datePart3 > MonthArray%datePart2% Or datePart2 > 12)
 			Return False
-		Return "{due: " . date . "}"
+		Return "due:" . date
 	}
 	Return date
 }
