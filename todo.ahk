@@ -64,7 +64,8 @@ ADD_BUTTON_TEXT := "Add"
 ARCHIVE_BUTTON_TEXT := "Archive"
 SUBTASK_CHECK_TEXT := "&Show Subtasks"
 
-CONTROL_WIDTH := 600
+CONTROL_WIDTH := 500
+LIST_WIDTH := 550
 LIST_HEIGHT := 500
 DATE_WIDTH := 250
 TEXT_WIDTH := 50
@@ -82,10 +83,11 @@ DISPLAY_SUBTASKS := GetConfig("UI","DisplaySubtasks","1")
 Menu TRAY, Icon, %ICON_PATH%
 
 ; Set font.
-Gui, font, s%FONT_SIZE%, %CONTROL_FONT%
+;Gui, font, s%FONT_SIZE%, %CONTROL_FONT%
 
 ; Define the GUI.
 Gui +Resize
+Gui, font, s8, Tahoma
 Gui Add, Text, w%TEXT_WIDTH% x10 Section, %ADD_LABEL%
 Gui Add, Edit, ys vNewItem W%CONTROL_WIDTH%
 Gui Add, Text, w%TEXT_WIDTH% x10 Section, %DUE_DATE_LABEL%
@@ -95,8 +97,14 @@ Gui Add, Edit,  ys W%LINE_NUM_WIDTH% Number
 Gui Add, UpDown, vLineNumber Range0-9999
 Gui Add, Text, w%TEXT_WIDTH% x10 Section, %FILTER_LABEL%
 Gui Add, Edit, vFilter gFilter ys W%CONTROL_WIDTH%
-Gui Add, Text, w%TEXT_WIDTH% x10 Section, %ITEMS_LABEL%
-Gui Add, ListView, vItems gItems ys Checked H%LIST_HEIGHT% W%CONTROL_WIDTH%, %CHECK_HEADER%|%PRIORITY_HEADER%|%TEXT_HEADER%|%LINE_NUMBER_HEADER%|%DUE_DATE_HEADER%
+;Gui Add, Text, w%TEXT_WIDTH% x10 Section, %ITEMS_LABEL%
+Gui Add, Text, w1 x1 Section, 
+
+; Set font.
+Gui, font, s%FONT_SIZE%, %CONTROL_FONT%
+Gui Add, ListView, vItems gItems ys Checked -ReadOnly H%LIST_HEIGHT% W%LIST_WIDTH%, %CHECK_HEADER%|%PRIORITY_HEADER%|%TEXT_HEADER%|%LINE_NUMBER_HEADER%|%DUE_DATE_HEADER%
+Gui, font, s8, Tahoma
+
 Gui Add, Button, vAdd gAdd Default Section, %ADD_BUTTON_TEXT%
 Gui Add, Button, gArchive ys, %ARCHIVE_BUTTON_TEXT%
 Gui Add, CheckBox, Checked%DISPLAY_SUBTASKS% gShowSubtask vShowSubtask ys, %SUBTASK_CHECK_TEXT%
