@@ -36,6 +36,8 @@ DONE_BACK_COLOR := GetConfig("UI","DoneBackColor","0xFFFFFF")
 WINDOW_TITLE := "TODOs"
 
 ADD_LABEL := "&New:" ; & underlines the next letter, enabling the user to press ALT+N to focus on the following text field.
+PROJECT_LABEL := "&Project:"
+CONTEXT_LABEL := "&Context:"
 FILTER_LABEL:= "&Filter:"
 DUE_DATE_LABEL := "&Due date:"
 ITEMS_LABEL := "&Items:"
@@ -67,7 +69,8 @@ SUBTASK_CHECK_TEXT := "&Show Subtasks"
 CONTROL_WIDTH := 500
 LIST_WIDTH := 550
 LIST_HEIGHT := 500
-DATE_WIDTH := 250
+DATE_WIDTH := 200
+COMBO_WIDTH := 200
 TEXT_WIDTH := 50
 LINE_NUM_WIDTH := 50
 
@@ -86,13 +89,22 @@ Menu TRAY, Icon, %ICON_PATH%
 ; Define the GUI.
 Gui +Resize
 Gui, font, s8, Tahoma
+; Line 1 in GUI
 Gui Add, Text, w%TEXT_WIDTH% x10 Section, %ADD_LABEL%
-Gui Add, Edit, ys vNewItem W%CONTROL_WIDTH%
+Gui Add, Edit, ys vNewItem w%CONTROL_WIDTH%
+; Line 2 in GUI
+Gui Add, Text, w%TEXT_WIDTH%  x10 Section, %PROJECT_LABEL%
+Gui Add, ComboBox, w%COMBO_WIDTH% ys vProject1 gFilter, +Test1|+Test2
+Gui Add, Text, w%TEXT_WIDTH% ys, %CONTEXT_LABEL%
+Gui Add, ComboBox, w%COMBO_WIDTH% ys vContext1 gFilter, @Test1|@Test2
+; Line 3 in GUI
 Gui Add, Text, w%TEXT_WIDTH% x10 Section, %DUE_DATE_LABEL%
 Gui Add, DateTime, ys vDueDate ChooseNone W%DATE_WIDTH%, yyyy-MM-dd
 Gui Add, Text, w%TEXT_WIDTH% ys, %LINE_NUM_LABEL%
 Gui Add, Edit,  ys W%LINE_NUM_WIDTH% Number
 Gui Add, UpDown, vLineNumber Range0-9999
+
+; Line 4 in GUI
 Gui Add, Text, w%TEXT_WIDTH% x10 Section, %FILTER_LABEL%
 Gui Add, Edit, vFilter gFilter ys W%CONTROL_WIDTH%
 Gui Add, Text, w1 x1 Section,
