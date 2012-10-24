@@ -786,7 +786,7 @@ CorrectOrder(ByRef NewItem, ByRef DueDate) {
 ;    If (project <> "") {
 ;        project = +%project%
 ;    }
-    MsgBox, %name%
+    ;MsgBox, %name%
     Order := name
 ;    Order := GetConfig("UI", "Order", "%name% %project% %context%")
 ;    StringReplace, Order, Order, `%project`%, %project%, All
