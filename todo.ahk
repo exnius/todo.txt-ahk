@@ -32,10 +32,21 @@ ICON_PATH := A_ScriptDir . "\" . ICON_FILE_NAME
 DONE_TEXT_COLOR := GetConfig("UI","DoneTextColor","0xAAAAAA")
 DONE_BACK_COLOR := GetConfig("UI","DoneBackColor","0xFFFFFF")
 
+A_TEXT_COLOR := GetConfig("UI","ATextColor","0x000000")
+A_BACK_COLOR := GetConfig("UI","ABackColor","0xFFFFFF")
+
+B_TEXT_COLOR := GetConfig("UI","BTextColor","0x000000")
+B_BACK_COLOR := GetConfig("UI","BBackColor","0xFFFFFF")
+
+C_TEXT_COLOR := GetConfig("UI","CTextColor","0x000000")
+C_BACK_COLOR := GetConfig("UI","CBackColor","0xFFFFFF")
+
+DUE_TEXT_COLOR := GetConfig("UI","DueTextColor","0x000000")
+DUE_BACK_COLOR := GetConfig("UI","DueBackColor","0xFFFFFF")
 
 WINDOW_TITLE := "To Do"
 
-; & underlines the next letter, enabling the user to press ALT+N to focus on the following text field.
+; '&' underlines the next letter, enabling the user to press ALT+N to focus on the following text field.
 ADD_LABEL := "&New:"
 PROJECT_LABEL := "&Project:"
 CONTEXT_LABEL := "&Context:"
@@ -46,7 +57,7 @@ FILE_LABEL := "&Task File:"
 LINE_NUM_LABEL := "&Line #:"
 
 SUBTASK_CHAR := GetConfig("UI", "SubtaskChar", "_")
-;NONE_TEXT := GetConfig("UI", "NoneText", "-")
+; NONE_TEXT := GetConfig("UI", "NoneText", "-")
 
 FILE_LIST := GetConfig("Files","FileList","todo")
 
@@ -87,7 +98,7 @@ Menu TRAY, Icon, %ICON_PATH%
 
 ; Define the GUI.
 Gui +Resize
-Gui, font, s8, Tahoma
+Gui, Font, s8, Tahoma
 ; Line 1 in GUI
 Gui Add, Text, w%TEXT_WIDTH% x10 Section, %ADD_LABEL%
 Gui Add, Edit, ys vNewItem W%LONG_CONTROL_WIDTH%
@@ -187,7 +198,7 @@ Gui, 2:Add, CheckBox, vTimeStamp Checked%TIME_STAMP%, Add time to date stamp whe
 Gui, 2:Add, Text, Section, Set hotkey to run the script.
 Gui, 2:Add, Text, ,
 Gui, 2:Add, Text, , Set column to sort list view by.
-;Gui, 2:Add, Text, , Set text to display for a blank priority field.
+; Gui, 2:Add, Text, , Set text to display for a blank priority field.
 Gui, 2:Add, Text, , Set character to denote subtasks.
 Gui, 2:Add, Text, , Set Gui font.
 Gui, 2:Add, Text, , Set Gui font size.
@@ -195,7 +206,7 @@ Gui, 2:Add, Hotkey, vScriptHotkey ys W%COL_2_WIDTH%, %SCRIPT_HOTKEY%
 Gui, 2:Add, CheckBox, vAddWin W%COL_2_WIDTH% Checked%ADD_WIN%, Add Win key to hotkey.
 Gui, 2:Add, Edit, W%COL_2_WIDTH%,
 Gui, 2:Add, UpDown, vSortColumn Range2-5, %SORT_COLUMN%
-;Gui, 2:Add, Edit, vNoneText W%COL_2_WIDTH%, %NONE_TEXT%
+; Gui, 2:Add, Edit, vNoneText W%COL_2_WIDTH%, %NONE_TEXT%
 Gui, 2:Add, Edit, vSubtaskChar Limit1 W%COL_2_WIDTH%, %SUBTASK_CHAR%
 Gui, 2:Add, Edit, vGuiFont W%COL_2_WIDTH%, %GUI_FONT%
 Gui, 2:Add, Edit, W%COL_2_WIDTH%,
@@ -261,6 +272,14 @@ Return
 
 ; Handle when the OK button is clicked or the ENTER key is pressed.
 Add:
+	GuiControlGet, ActiveControl, FocusV
+
+	; If enter is pressed while the list view is active, update item.
+	If (ActiveControl = "Items") {
+		UpdateItem(LV_GetNext())
+		Return
+	}
+
     Gui Submit, NoHide
 
     If (DueDate <> "") {
@@ -299,6 +318,9 @@ Return
 
 ; Handle listview events.
 Items:
+	; Get the line number of the selected row.
+	lineNumber := LV_GetNext()
+	
     ; Handle when an item is checked or unchecked.
     If (A_GuiEvent = "I") {
         If (InStr(ErrorLevel, "C", true))
@@ -309,12 +331,16 @@ Items:
 
     ; Handle when an item is double clicked.
     Else If (A_GuiEvent = "DoubleClick") {
-        UpdateItem(A_EventInfo)
-    }
+		If (lineNumber != 0) {
+			UpdateItem(lineNumber)
+		}
+	}
 
-    ; Handle when an item is right-clicked.
-    Else If (A_GuiEvent = "RightClick") {
-        Menu ItemMenu, Show
+	; Handle when an item is right-clicked.
+	Else If (A_GuiEvent = "RightClick") {
+		If (lineNumber != 0) {
+			Menu ItemMenu, Show
+		}
     }
 Return
 
@@ -389,6 +415,15 @@ ReadFile(filter, refreshFilter) {
     Global TEXT_COLUMN
     Global SUBTASK_CHAR
     Global LINE_COLUMN
+
+	Global A_TEXT_COLOR
+	Global A_BACK_COLOR
+	Global B_TEXT_COLOR
+	Global B_BACK_COLOR
+	Global C_TEXT_COLOR
+	Global C_BACK_COLOR
+	Global DUE_TEXT_COLOR
+	Global DUE_BACK_COLOR
     Global DONE_TEXT_COLOR
     Global DONE_BACK_COLOR
 
@@ -400,18 +435,6 @@ ReadFile(filter, refreshFilter) {
     ; Use these variables to keep track of what contexts and projects have been added.
     contextsAdded := "|"
     projectsAdded := "|"
-
-    A_TEXT_COLOR := GetConfig("UI","ATextColor","0x000000")
-    A_BACK_COLOR := GetConfig("UI","ABackColor","0xFFFFFF")
-
-    B_TEXT_COLOR := GetConfig("UI","BTextColor","0x000000")
-    B_BACK_COLOR := GetConfig("UI","BBackColor","0xFFFFFF")
-
-    C_TEXT_COLOR := GetConfig("UI","CTextColor","0x000000")
-    C_BACK_COLOR := GetConfig("UI","CBackColor","0xFFFFFF")
-
-    DUE_TEXT_COLOR := GetConfig("UI","DueTextColor","0x000000")
-    DUE_BACK_COLOR := GetConfig("UI","DueBackColor","0xFFFFFF")
 
     ; Disable notifications for checking and unchecking while the list is populated.
     GuiControl, -AltSubmit, Items
@@ -431,10 +454,10 @@ ReadFile(filter, refreshFilter) {
 
     ; Escape subtask char if needed for use in RegExMatch.
     If (RegExMatch(SUBTASK_CHAR, "^[\\[.*?+{|()^$]$")) {
-        char := "\" . SUBTASK_CHAR
+		subtaskChar := "\" . SUBTASK_CHAR
     }
     Else {
-        char := SUBTASK_CHAR
+		subtaskChar := SUBTASK_CHAR
     }
 
     ; Read file one line at a time.
@@ -472,7 +495,7 @@ ReadFile(filter, refreshFilter) {
                 }
             }
 
-            If (ShowSubtask Or Not RegExMatch(textPart, "^\s*" . char . ".*")) {
+			If (ShowSubtask Or Not RegExMatch(textPart, "^\s*" . subtaskChar . ".*")) {
 
                 If (filter <> "") {
                     IfInString, line, %filter%
@@ -648,27 +671,21 @@ AddItemAction(NewItem, ByRef donePart, ByRef textPart, ByRef datePart) {
 ; Check or uncheck an item in todo.txt.
 CheckItem(rowNumber, checked) {
     Global LINE_COLUMN
-    Global DONE_TEXT_COLOR
-    Global DONE_BACK_COLOR
 
     GetPartsFromRow(rowNumber, text, date)
 
     UpdateFile("CheckItemAction", checked, text, date)
-    ; Get line number so we can change the color on the correct row
-    LV_GetText(LineNumber, rowNumber, LINE_COLUMN)
-    if (checked) {
-        LV_SetColor(LineNumber, DONE_TEXT_COLOR, DONE_BACK_COLOR)
-    }
-    else {
-        LV_SetColor(LineNumber, 0x000000, 0xFFFFFF)
-    }
+	; Get line number so we can change the color on the correct row.
+    LV_GetText(lineNumber, rowNumber, LINE_COLUMN)
+
+	HighlightLine(lineNumber, checked)
 }
 
 ; Action for CheckItem.
 CheckItemAction(checked, ByRef donePart, ByRef textPart, ByRef datePart) {
     If (checked) {
-        RegExMatch(textPart, "(\([A-Z]\) )?(.*)",prioTemp)
-        textPart := prioTemp2
+        ;RegExMatch(textPart, "(\([A-Z]\) )?(.*)",prioTemp)
+        ;textPart := prioTemp2
         If (donePart = "") {
             If (GetConfig("UI", "TimeStamp", "1")) {
                 FormatTime, donePart, , 'x 'yyyy-MM-dd HH:mm
@@ -687,10 +704,13 @@ CheckItemAction(checked, ByRef donePart, ByRef textPart, ByRef datePart) {
 UpdateItem(rowNumber) {
     Global UPDATE_PROMPT
 
+	If (! rowNumber) {
+		Return
+	}
+	
     GetPartsFromRow(rowNumber, text, date)
 
     StringReplace prompt, UPDATE_PROMPT, `%text`%, %text%
-;	task := priority
     task := task = "" ? text : task . " " . text
     task := task = "" ? date : task . " " . date
     task := TrimWhitespace(task)
@@ -721,23 +741,31 @@ UpdateItemAction(newText, ByRef donePart, ByRef textPart, ByRef datePart) {
 UpdatePriority(newPriority, rowNumber) {
     GetPartsFromRow(rowNumber, text, date)
 
+    If (newPriority = "None") {
+        newPriority := ""
+    }
+
     UpdateFile("UpdatePriorityAction", newPriority, text, datePart)
     FilterItems()
 }
 
-; Action for UpdatePriority
+; Action for UpdatePriority.
 UpdatePriorityAction(newPriority, ByRef donePart, ByRef textPart, ByRef datePart) {
-    RegExMatch(textPart, "^(\([A-Z]\) )?(.*)",prioTemp)
-    if (newPriority == "None")
-        textPart := prioTemp2
-    else
-        textPart := newPriority . " " . prioTemp2
+    textPart := RegExReplace(textPart, "^\([A-Z]\)", newPriority, replacementCount)
+
+    If (replacementCount = 0 And newPriority != "") {
+        textPart := newPriority . " " . textPart
+    }
 }
 
 ; Delete an item.
 DeleteItem(rowNumber) {
     Global DELETE_PROMPT
 
+	If (! rowNumber) {
+		Return
+	}
+	
     GetPartsFromRow(rowNumber, text, date)
 
     StringReplace prompt, DELETE_PROMPT, `%text`%, %text%
@@ -757,6 +785,27 @@ DeleteItemAction(data, ByRef donePart, ByRef textPart, ByRef datePart) {
     datePart := ""
 }
 
+; Archive an item.
+ArchiveItems() {
+	count := UpdateFile("ArchiveItemsAction", 0, "*", "")
+	FilterItems()
+	MsgBox Archived %count% items!
+}
+
+; Action for ArchiveItems.
+ArchiveItemsAction(data, ByRef donePart, ByRef textPart, ByRef datePart) {
+	Global DONE_PATH
+
+	If (donePart <> "") {
+
+		line := MakeLine(donePart, textPart, datePart)
+		FileAppend %line%`n, %DONE_PATH%
+		DeleteItemAction(data, donePart, textPart, datePart)
+
+		Return true
+	}
+}
+
 ; Gets the text and date for the specified row.
 GetPartsFromRow(rowNumber, ByRef text, ByRef date) {
     Global TEXT_COLUMN
@@ -767,25 +816,55 @@ GetPartsFromRow(rowNumber, ByRef text, ByRef date) {
     LV_GetText(date, rowNumber, DUE_DATE_COLUMN)
 }
 
-; Archive an item.
-ArchiveItems() {
-    count := UpdateFile("ArchiveItemsAction", 0, "*", "")
-    FilterItems()
-    MsgBox Archived %count% items!
-}
+; Change the color of the row according to its done status, due date, or priority.
+HighlightLine(rowNumber, isRowChecked) {
+    Global LINE_COLUMN
+	Global DONE_TEXT_COLOR
+    Global DONE_BACK_COLOR
+	Global A_TEXT_COLOR
+	Global A_BACK_COLOR
+	Global B_TEXT_COLOR
+	Global B_BACK_COLOR
+	Global C_TEXT_COLOR
+	Global C_BACK_COLOR
+	Global DUE_TEXT_COLOR
+	Global DUE_BACK_COLOR
 
-ArchiveItemsAction(data, ByRef donePart, ByRef textPart, ByRef datePart) {
-    Global DONE_PATH
+	GetPartsFromRow(rowNumber, textPart, datePart)
 
-    If (donePart <> "") {
-        RegExMatch(textPart, "(\([A-Z]\) )?(.*)",prioTemp)
-        textPart := prioTemp2
-        line := MakeLine(donePart, textPart, datePart)
-        FileAppend %line%`n, %DONE_PATH%
-        DeleteItemAction(data, donePart, textPart, datePart)
+	RegExMatch(textPart, "^\([A-Z]\)", priorityPart)
 
-        Return true
-    }
+	; Get line number so we can change the color on the correct row.
+    ; LV_GetText(lineNumber, rowNumber, LINE_COLUMN)
+
+	; MsgBox %rowNumber% %lineNumber%
+	lineNumber := rowNumber
+
+	; Highlight task if it is done.
+	If (isRowChecked) {
+		LV_SetColor(lineNumber, DONE_TEXT_COLOR, DONE_BACK_COLOR)
+	}
+
+	; Highlight task if it is due today (or overdue).
+	Else If (RegExMatch(datePart, "^due:(\d\d\d\d)-(\d\d)-(\d\d)$", dateSection)
+	And (dateSection3 <= A_DD And dateSection2 <= A_MM And dateSection1 <= A_YYYY
+	Or dateSection2 < A_MM And dateSection1 <= A_YYYY
+	Or dateSection1 < A_YYYY)) {
+		LV_SetColor(lineNumber, DUE_TEXT_COLOR, DUE_BACK_COLOR)
+	}
+
+	; Highlight task according to priority.
+	Else If (priorityPart = "(A)") {
+		LV_SetColor(lineNumber, A_TEXT_COLOR, A_BACK_COLOR)
+	}
+	Else If (priorityPart = "(B)") {
+		LV_SetColor(lineNumber, B_TEXT_COLOR, B_BACK_COLOR)
+	}
+	Else If (priorityPart = "(C)") {
+		LV_SetColor(lineNumber, C_TEXT_COLOR, C_BACK_COLOR)
+	} Else {
+		LV_SetColor(lineNumber, 0x000000, 0xFFFFFF)
+	}
 }
 
 ; Correct order of context, project, priority, and due date for writing to todo.txt if needed.
@@ -819,7 +898,7 @@ CorrectOrder(ByRef NewItem, ByRef DueDate) {
                     name := name . " " . element
                 }
             }
-            Else If (RegExMatch(element, "due:\d\d\d\d-\d?-\d?")) {
+            Else If (RegExMatch(element, "due:\d\d\d\d-\d\d-\d\d")) {
                 DueDate := "" ? element : DueDate . " " . element
             }
             Else {
