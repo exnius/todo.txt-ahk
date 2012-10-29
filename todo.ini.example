@@ -1,28 +1,29 @@
 ; Rename this file to todo.ini and put it in the script folder.
 
 [UI]
-; Set hotkey to open gui. (Defaule #t)
+; Set hotkey to open GUI. (Default #t)
 ; This can be any valid hotkey in ahk.
 ; However, only the ctrl(^), alt(!), shift(+), and windows(#) modifiers can be used by the options gui.
 ; Example:
 ; ScriptHotkey=#t
 ScriptHotkey=#t
 
-; Set this to 1 to close after adding an item.
+; Set this to 1 to close the GUI after adding an item.
 ; Set it to 0 (the default) to keep the GUI open.
 CloseAfterAdding=0
 
 ; Set the number of the column that will be sorted automatically when the GUI is refreshed.
-; Set this as 4 to sort by line number, or 2 to sort by priority.
+; Set this as 3 to sort by line number, or 2 to sort by priority.
 SortColumn=2
 
-; Set text to display when the priority field is blank, default "-".
-NoneText= 
-
-; Set order for project, name, and context of task to be written to file.
-; Names must be lowercase, between %'s, and seperated by spaces.
-; Example: Order=%context% %name% %project%
-Order=%project% %name% %context%
+; Set the order for the project, name, and context of a task.
+; The task will be reordered when it is added or updated.
+; If left blank, the script will leave the project, name, and context of the task as entered.
+; Separate names by '|'s. Do not use any whitespace characters.
+; Example: Order=context|name|project
+; Example: Order=
+;Order=name|project|context
+Order=project|name|context
 
 ; Set to 1 (the default) to add time stamp and a date stamp when an item is done. (Format yyyy-MM-dd 24HH:mm)
 ; Set to 0 to use only a date stamp. (Does not affect previously stamped items.)
@@ -33,7 +34,7 @@ TimeStamp=1
 ; If the set character does not match the one used in the task file, the script will not be able to read it.
 SubtaskChar=-
 
-; Set to 1 (default) if subtasks should be displayed by default.
+; Set to 1 (default) if subtasks should be displayed when the script is opened.
 ; Set to 0 if subtasks should be hidden when the script is opened.
 DisplaySubtasks=1
 
@@ -42,7 +43,7 @@ GuiFont=Tahoma
 FontSize=8
 
 ; Set text and background colors for marking items with certain priorities and items that are due today.
-; Use 0xRRGGBB format. (0x000000 is black, 0xFFFFFF is white, etc.)
+; Use 0xRRGGBB format. (0x000000 is black, 0xFFFFFF is white, 0xFF0000 is red, etc.)
 
 ; Set text and background color for item with an (A) priority.
 ATextColor=0xFF0000
@@ -60,7 +61,7 @@ CBackColor=0xFFFFFF
 DueTextColor=0xFFFFFF
 DueBackColor=0xFF0000
 
-; Set text and background color for item that is due today.
+; Set text and background color for item that is marked as done.
 DoneTextColor=0xAAAAAA
 DoneBackColor=0xFFFFFF
 
@@ -75,7 +76,7 @@ Folder=d:\documents\todo.ahk
 
 ; The name of the todo.txt file.
 ; If this is relative, it's relative to the default folder (above).
-; If it's absolute (starts with somethig like C:\ or \\), the default
+; If it's absolute (starts with something like C:\ or \\), the default
 ; folder is ignored.
 ; It can also contain references to environmental variables.
 Todo=todo.txt
@@ -85,7 +86,7 @@ Todo=todo.txt
 Done=done.txt
 
 ; Set the list of names for each file to be displayed in the window menu.
-; Seperate names by '|'s. Do not use any whitespace characters.
+; Separate names by '|'s. Do not use any whitespace characters.
 ; Then for each name make a new line like this: NAME=FILEPATH
 ; File paths follow the same rules as above.
 ; Todo.txt is defined above and does not need to be redefined.
