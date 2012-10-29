@@ -341,6 +341,20 @@ Items:
 		If (lineNumber != 0) {
 			Menu ItemMenu, Show
 		}
+	}
+
+	Else If (A_GuiEvent = "K") {
+		If (lineNumber != 0) {
+			; Delete item when the delete key is pressed.
+			If (A_EventInfo = 46) {
+					DeleteItem(lineNumber)
+			}
+			
+			; Show context menu when the apps key is pressed.
+			Else If (A_EventInfo = 93) {
+				Menu ItemMenu, Show
+			}
+		}
     }
 Return
 
