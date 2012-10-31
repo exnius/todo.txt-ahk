@@ -350,6 +350,22 @@ Items:
 			Else If (A_EventInfo = 93) {
 				Menu ItemMenu, Show
 			}
+			
+			; Update priority when {A}, {B}, or {C} is pressed.
+			Else If (A_EventInfo >= 65 And A_EventInfo <= 67) {
+				newPriority := "(" . Chr(A_EventInfo) . ")"
+				
+				GetPartsFromRow(lineNumber, text, date)
+				RegExMatch(text, "^\([ABC]\)", priorityPart)
+				
+				; Toggle priority if it is the same as the pressed key.
+				If (newPriority = priorityPart) {
+					UpdatePriority("", lineNumber)
+				} Else {
+					UpdatePriority(newPriority, lineNumber)
+				}
+				LV_Modify(lineNumber, "select focus")
+			}
 		}
     }
 Return
