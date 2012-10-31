@@ -25,9 +25,9 @@ SortColumn=2
 ;Order=name|project|context
 Order=project|name|context
 
-; Set to 1 (the default) to add time stamp and a date stamp when an item is done. (Format yyyy-MM-dd 24HH:mm)
-; Set to 0 to use only a date stamp. (Does not affect previously stamped items.)
-TimeStamp=1
+; Set to 0 (the default) to use only a date stamp. (Does not affect previously stamped items.)
+; Set to 1 to add time stamp and a date stamp when an item is done. (Format yyyy-MM-dd 24HH:mm)
+TimeStamp=0
 
 ; Set character to denote a subtask. (Default "_")
 ; Note: If this changes, the script will not change the characters in the file(s).
