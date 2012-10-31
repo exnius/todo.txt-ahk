@@ -283,17 +283,21 @@ Add:
     }
 
     If (Project <> "") {
+		Project := RegExReplace(Project, "^\+?", "+")
         NewItem := NewItem . " " . Project
     }
 
     If (Context <> "") {
+		Context := RegExReplace(Context, "^@?", "@")
         NewItem := NewItem . " " . Context
     }
 
     AddItem(NewItem, DueDate, LineNumber)
 
     ; Clear the NewItem edit box.
-    GuiControl ,, NewItem,
+	GuiControl,, NewItem
+	
+	GuiControl, Focus, NewItem
 
     ; Find if close after adding option is true.
     If (GetConfig("UI", "CloseAfterAdding", "1"))
@@ -442,6 +446,8 @@ ReadFile(filter, refreshFilter) {
     Global SUBTASK_CHAR
     Global LINE_COLUMN
 
+	Global DONE_TEXT_COLOR
+    Global DONE_BACK_COLOR
 	Global A_TEXT_COLOR
 	Global A_BACK_COLOR
 	Global B_TEXT_COLOR
@@ -450,17 +456,22 @@ ReadFile(filter, refreshFilter) {
 	Global C_BACK_COLOR
 	Global DUE_TEXT_COLOR
 	Global DUE_BACK_COLOR
-    Global DONE_TEXT_COLOR
-    Global DONE_BACK_COLOR
 
-    GuiControlGet ShowSubtask
-
-    ; Clear the combo boxes.
-    GuiControl ,, Context, ||
-    GuiControl ,, Project, ||
-    ; Use these variables to keep track of what contexts and projects have been added.
-    contextsAdded := "|"
-    projectsAdded := "|"
+	GuiControlGet, ShowSubtask
+	GuiControlGet, Project
+	GuiControlGet, Context
+	
+	; Add "+" and "@" to project or context if needed.
+	Project := RegExReplace(Project, "^\+?", "+")
+	Context := RegExReplace(Context, "^@?", "@")
+	
+	; Use these variables to keep track of what contexts and projects have been added.
+	projectsAdded := Project <> "+" ? "|" . Project . "||" : "|"
+	contextsAdded := Context <> "@" ? "|" . Context . "||" : "|"
+	
+	; Clear the combo boxes.
+	GuiControl ,, Project, ||
+	GuiControl ,, Context, ||
 
     ; Disable notifications for checking and unchecking while the list is populated.
     GuiControl, -AltSubmit, Items
@@ -494,8 +505,17 @@ ReadFile(filter, refreshFilter) {
         If (line <> "") {
             lineNumber := lineNumber + 1
 
-            ; Text part includes priority; priorityPart is here so we can change the row color accordingly.
-            ParseLine(line, donePart, textPart, priorityPart, datePart)
+			ParseLine(line, donePart, textPart, datePart)
+
+			
+			; Find projects to add to combo boxes.
+			RegExMatch(textPart, "\+\S+", projectPart)
+
+			If (projectPart <> "") {
+				If (InStr(projectsAdded, "|" . projectPart . "|") = 0) {
+					projectsAdded := projectsAdded . projectPart . "|"
+				}
+			}
 
             ; Copy textPart so we can remove the contexts one at a time.
             textPartTemp := textPart
@@ -512,15 +532,7 @@ ReadFile(filter, refreshFilter) {
                 }
             }
 
-            ; Find projects to add to combo boxes.
-            RegExMatch(textPart, "\+\S+", projectPart)
-
-            If (projectPart <> "") {
-                If (InStr(projectsAdded, "|" . projectPart . "|") = 0) {
-                    projectsAdded := projectsAdded . projectPart . "|"
-                }
-            }
-
+			; If item is a subtask, only add it to the list view if show subtasks is checked.
 			If (ShowSubtask Or Not RegExMatch(textPart, "^\s*" . subtaskChar . ".*")) {
 
                 If (filter <> "") {
@@ -612,8 +624,8 @@ UpdateFile(action, data, text, date) {
         line := TrimWhitespace(A_LoopReadLine)
 
         If (line <> "") {
-            ; Text part includes priority; priorityPart is unused.
-            ParseLine(line, donePart, textPart, priorityPart, datePart)
+			ParseLine(line, donePart, textPart, datePart)
+
 
             If ((text = "*") Or (textPart = text)) {
                 If (%action%(data, donePart, textPart, datePart))
@@ -635,14 +647,12 @@ UpdateFile(action, data, text, date) {
 }
 
 ; Parse a line from todo.txt.
-ParseLine(line, ByRef donePart, ByRef textPart, ByRef priorityPart, ByRef datePart) {
-    RegExMatch(line, "^(x \d\d\d\d-\d\d-\d\d(?: \d?\d:\d\d)? )?(\([A-Z]\))?(.*?)(\sdue:\d\d\d\d-[0-1]\d-[0-3]\d)?$", linePart)
+ParseLine(line, ByRef donePart, ByRef textPart, ByRef datePart) {
+	RegExMatch(line, "^(x \d\d\d\d-\d\d-\d\d(?: \d?\d:\d\d)? )?(.*?)(\sdue:\d\d\d\d-[0-1]\d-[0-3]\d)?$", linePart)
 
-    donePart := TrimWhitespace(linePart1)
-    priorityPart := TrimWhitespace(linePart2)
-    textPart := TrimWhitespace(linePart3)
-    textPart := priorityPart <> "" ? priorityPart . " " . textPart : textPart
-    datePart := TrimWhitespace(linePart4)
+	donePart := TrimWhitespace(linePart1)
+	textPart := TrimWhitespace(linePart2)
+	datePart := TrimWhitespace(linePart3)
 }
 
 ; Put a parsed line back together for writing to todo.txt.
@@ -650,6 +660,7 @@ MakeLine(ByRef donePart, ByRef textPart, ByRef datePart) {
     Global SUBTASK_CHAR
 
     line := textPart
+
     If (donePart <> "") {
         line := donePart . " " . line
     }
@@ -836,7 +847,7 @@ ArchiveItemsAction(data, ByRef donePart, ByRef textPart, ByRef datePart) {
 GetPartsFromRow(rowNumber, ByRef text, ByRef date) {
     Global TEXT_COLUMN
     Global DUE_DATE_COLUMN
-    Global NONE_TEXT
+    ; Global NONE_TEXT
 
     LV_GetText(text, rowNumber, TEXT_COLUMN)
     LV_GetText(date, rowNumber, DUE_DATE_COLUMN)
