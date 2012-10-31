@@ -131,7 +131,6 @@ Gui Add, CheckBox, Checked%DISPLAY_SUBTASKS% gShowSubtask vShowSubtask ys, %SUBT
 LV_ModifyCol(LINE_COLUMN , "Logical")
 LV_ModifyCol(DUE_DATE_COLUMN , "Logical")
 
-
 ; Define the right-click menu in the listview.
 Menu ItemMenu, Add, Update, MenuHandler
 Menu ItemMenu, Add, Delete, MenuHandler
@@ -191,22 +190,20 @@ IfInString, SCRIPT_HOTKEY, #
 }
 
 ; Define options Gui.
-Gui, 2:Add, Text, R2 , Options:
+Gui, 2:Add, Text, R2 , Options: (See .ini file for more options)
 Gui, 2:Add, CheckBox, vCloseAfterAdding Checked%CLOSE_AFTER_ADDING% W%COL_1_WIDTH%, Close Gui after adding item.
 Gui, 2:Add, CheckBox, vDisplaySubtasks Checked%DISPLAY_SUBTASKS%, Display subtasks by default.
 Gui, 2:Add, CheckBox, vTimeStamp Checked%TIME_STAMP%, Add time to date stamp when item is done.
 Gui, 2:Add, Text, Section, Set hotkey to run the script.
 Gui, 2:Add, Text, ,
 Gui, 2:Add, Text, , Set column to sort list view by.
-; Gui, 2:Add, Text, , Set text to display for a blank priority field.
 Gui, 2:Add, Text, , Set character to denote subtasks.
 Gui, 2:Add, Text, , Set Gui font.
 Gui, 2:Add, Text, , Set Gui font size.
 Gui, 2:Add, Hotkey, vScriptHotkey ys W%COL_2_WIDTH%, %SCRIPT_HOTKEY%
 Gui, 2:Add, CheckBox, vAddWin W%COL_2_WIDTH% Checked%ADD_WIN%, Add Win key to hotkey.
 Gui, 2:Add, Edit, W%COL_2_WIDTH%,
-Gui, 2:Add, UpDown, vSortColumn Range2-5, %SORT_COLUMN%
-; Gui, 2:Add, Edit, vNoneText W%COL_2_WIDTH%, %NONE_TEXT%
+Gui, 2:Add, UpDown, vSortColumn Range2-4, %SORT_COLUMN%
 Gui, 2:Add, Edit, vSubtaskChar Limit1 W%COL_2_WIDTH%, %SUBTASK_CHAR%
 Gui, 2:Add, Edit, vGuiFont W%COL_2_WIDTH%, %GUI_FONT%
 Gui, 2:Add, Edit, W%COL_2_WIDTH%,
@@ -253,7 +250,6 @@ OK:
     WriteConfig("UI", "DisplaySubtasks", DisplaySubtasks)
     WriteConfig("UI", "TimeStamp", TimeStamp)
     WriteConfig("UI", "SortColumn", SortColumn)
-    ; WriteConfig("UI", "NoneText", NoneText)
     WriteConfig("UI", "SubtaskChar", SubtaskChar)
     WriteConfig("UI", "GuiFont", GuiFont)
     WriteConfig("UI", "FontSize", FontSize)
@@ -274,7 +270,7 @@ Return
 Add:
 	GuiControlGet, ActiveControl, FocusV
 
-	; If enter is pressed while the list view is active, update item.
+	; If {ENTER} is pressed while the list view is active, update item.
 	If (ActiveControl = "Items") {
 		UpdateItem(LV_GetNext())
 		Return
@@ -345,12 +341,12 @@ Items:
 
 	Else If (A_GuiEvent = "K") {
 		If (lineNumber != 0) {
-			; Delete item when the delete key is pressed.
+			; Delete item when {DELETE} is pressed.
 			If (A_EventInfo = 46) {
 					DeleteItem(lineNumber)
 			}
 			
-			; Show context menu when the apps key is pressed.
+			; Show context menu when {APPSKEY} is pressed.
 			Else If (A_EventInfo = 93) {
 				Menu ItemMenu, Show
 			}
