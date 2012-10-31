@@ -543,30 +543,10 @@ ReadFile(filter, refreshFilter) {
                 } Else {
                     AddItemToList(donePart, textPart, datePart, lineNumber)
                 }
-                ; Change color of row according to priority.
-                LV_SetColor(lineNumber, 0x000000, 0xFFFFFF)
-                If (priorityPart = "(A)") {
-                    LV_SetColor(lineNumber, A_TEXT_COLOR, A_BACK_COLOR)
-                }
-                Else If (priorityPart = "(B)") {
-                    LV_SetColor(lineNumber, B_TEXT_COLOR, B_BACK_COLOR)
-                }
-                Else If (priorityPart = "(C)") {
-                    LV_SetColor(lineNumber, C_TEXT_COLOR, C_BACK_COLOR)
-                }
 
-				; Highlight task if it is due today (or overdue).
-                If (RegExMatch(datePart, "^due:(\d\d\d\d)-(\d\d)-(\d\d)$", dateSection)
-                And (dateSection3 <= A_DD And dateSection2 <= A_MM And dateSection1 <= A_YYYY
-                Or dateSection2 < A_MM And dateSection1 <= A_YYYY
-                Or dateSection1 < A_YYYY))
-                {
-                    LV_SetColor(lineNumber, DUE_TEXT_COLOR, DUE_BACK_COLOR)
-                }
-                if (donePart <> "")
-                {
-                    LV_SetColor(lineNumber, DONE_TEXT_COLOR, DONE_BACK_COLOR)
-                }
+				; Add color to line based on priority, due date, and whether its done.
+				; Line number is 1 because the last added item will be at the top of the list view until it is sorted.
+				HighlightLine(1, donePart <> "")
             }
         }
     }
@@ -708,21 +688,27 @@ AddItemAction(NewItem, ByRef donePart, ByRef textPart, ByRef datePart) {
 ; Check or uncheck an item in todo.txt.
 CheckItem(rowNumber, checked) {
     Global LINE_COLUMN
+    Global TEXT_COLUMN
 
     GetPartsFromRow(rowNumber, text, date)
 
     UpdateFile("CheckItemAction", checked, text, date)
-	; Get line number so we can change the color on the correct row.
-    LV_GetText(lineNumber, rowNumber, LINE_COLUMN)
 
-	HighlightLine(lineNumber, checked)
+	; Remove priority.
+	text := RegExReplace(text, "^\([A-Z]\)\s+", "")
+	
+	LV_Modify(rowNumber, "Col" . TEXT_COLUMN, text)
+	
+	HighlightLine(rowNumber, checked)
 }
 
 ; Action for CheckItem.
 CheckItemAction(checked, ByRef donePart, ByRef textPart, ByRef datePart) {
     If (checked) {
-        ;RegExMatch(textPart, "(\([A-Z]\) )?(.*)",prioTemp)
-        ;textPart := prioTemp2
+		; Remove priority.
+		textPart := RegExReplace(textPart, "^\([A-Z]\)", "")
+		
+		; Add date stamp.
         If (donePart = "") {
             If (GetConfig("UI", "TimeStamp", "1")) {
                 FormatTime, donePart, , 'x 'yyyy-MM-dd HH:mm
@@ -740,6 +726,7 @@ CheckItemAction(checked, ByRef donePart, ByRef textPart, ByRef datePart) {
 ; Change the text of an item.
 UpdateItem(rowNumber) {
     Global UPDATE_PROMPT
+    Global LINE_COLUMN
 
 	If (! rowNumber) {
 		Return
@@ -751,7 +738,14 @@ UpdateItem(rowNumber) {
     task := task = "" ? text : task . " " . text
     task := task = "" ? date : task . " " . date
     task := TrimWhitespace(task)
+    
+    ;GuiControl,,NewItem,%task%
+    ;LV_GetText(lineNum, rowNumber, LINE_COLUMN)
+    ;lineNum := lineNum-1
+    ;MsgBox,%lineNum%
+    ;GuiControl,,LineNumber,%lineNum%
 
+    ;GuiControl Focus, NewItem
     InputBox newText, Update Item, %prompt%,,,,,,,, %task%
 
     If ErrorLevel
@@ -770,12 +764,15 @@ UpdateItem(rowNumber) {
 UpdateItemAction(newText, ByRef donePart, ByRef textPart, ByRef datePart) {
     blankDone := ""
 
-    ; Pass in blankDone and blankPriority because we want to retain the value of donePart and priorityPart is useless.
-    ParseLine(newText, blankDone, textPart, priorityPart, datePart)
+	; Pass in blankDone because we want to retain the value of donePart.
+	ParseLine(newText, blankDone, textPart, datePart)
 }
 
 ; Changes the priority of an item when it is selected from the menu.
 UpdatePriority(newPriority, rowNumber) {
+	Global TEXT_COLUMN
+	Global LINE_COLUMN
+	
     GetPartsFromRow(rowNumber, text, date)
 
     If (newPriority = "None") {
@@ -783,7 +780,17 @@ UpdatePriority(newPriority, rowNumber) {
     }
 
     UpdateFile("UpdatePriorityAction", newPriority, text, datePart)
-    FilterItems()
+	
+	; Remove priority.
+	text := RegExReplace(text, "^\([A-Z]\)\s*", "", replacementCount)
+
+	If (newPriority != "") {
+		text := newPriority . " " . text
+	}
+	
+	LV_Modify(rowNumber, "Col" . TEXT_COLUMN, text)
+	
+	HighlightLine(rowNumber, False)
 }
 
 ; Action for UpdatePriority.
@@ -869,13 +876,10 @@ HighlightLine(rowNumber, isRowChecked) {
 
 	GetPartsFromRow(rowNumber, textPart, datePart)
 
-	RegExMatch(textPart, "^\([A-Z]\)", priorityPart)
-
 	; Get line number so we can change the color on the correct row.
-    ; LV_GetText(lineNumber, rowNumber, LINE_COLUMN)
-
-	; MsgBox %rowNumber% %lineNumber%
-	lineNumber := rowNumber
+    LV_GetText(lineNumber, rowNumber, LINE_COLUMN)
+	
+	RegExMatch(textPart, "^\([A-Z]\)", priorityPart)
 
 	; Highlight task if it is done.
 	If (isRowChecked) {
